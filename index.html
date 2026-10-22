@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SC-300 模擬問題</title>
 <script>(function(){try{var u=navigator.userAgent||"";var m=/Android|iPhone|iPod|Mobile/i.test(u)||(/iPad|Macintosh/.test(u)&&navigator.maxTouchPoints>1);if(m&&!window.pywebview&&!window.__SC300_DATA)document.documentElement.classList.add("mob");}catch(e){}})();</script>
@@ -223,19 +225,19 @@ details.rs{border-radius:10px;overflow:hidden}
 </style>
 </head>
 <body>
-<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v7 プレビュー</span></span><span class="sp"></span><span id="topR"></span></div>
+<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8</span></span><span class="sp"></span><span id="topR"></span></div>
 <div id="app"></div>
 
 <script>
-/* EXE 版: ローカル サーバーの /api で、EXE と同じ階層のフォルダー(SC300Exam_data)にも保存する。通常のブラウザー表示では何もしない */
+/* EXE 版のみ: 学習記録を EXE と同じ階層のフォルダー(SC300Exam_data)にも保存する。通常のブラウザー表示では何もしない(通信は一切行わない) */
 (function(){try{
- var ipc=!!window.__SC300_DATA,d,Q=[];if(ipc){d=window.__SC300_DATA;}else{var x=new XMLHttpRequest();x.open('GET','/api/load',false);x.send();if(x.status!==200)return;d=JSON.parse(x.responseText);}
+ var ipc=!!window.__SC300_DATA,d,Q=[];if(ipc){d=window.__SC300_DATA;}else{return;}
  Object.keys(localStorage).filter(function(k){return k.indexOf('sc300_')===0;}).forEach(function(k){localStorage.removeItem(k);});
  Object.keys(d).forEach(function(k){localStorage.setItem(k,d[k]);});
  var si=Storage.prototype.setItem,ri=Storage.prototype.removeItem,ci=Storage.prototype.clear;
  function flush(){while(Q.length&&window.pywebview&&pywebview.api&&pywebview.api.store){try{pywebview.api.store(JSON.stringify(Q.shift()));}catch(e){}}}
  if(ipc)window.addEventListener('pywebviewready',flush);
- function post(o){if(ipc){Q.push(o);flush();return;}try{var y=new XMLHttpRequest();y.open('POST','/api/store',true);y.setRequestHeader('Content-Type','application/json');y.send(JSON.stringify(o));}catch(e){}}
+ function post(o){Q.push(o);flush();}
  Storage.prototype.setItem=function(k,v){si.call(this,k,v);if(this===localStorage){var o={};o[k]=String(v);post({set:o});}};
  Storage.prototype.removeItem=function(k){ri.call(this,k);if(this===localStorage)post({remove:[k]});};
  Storage.prototype.clear=function(){ci.call(this);if(this===localStorage)post({clear:1});};
@@ -1713,11 +1715,11 @@ const SER=()=>S.order.filter(i=>Q[i].series);
 const $=s=>document.querySelector(s);
 const tx=v=>typeof v==='string'?v:(S.lang==='en'?v[1]:v[0]);
 const ot=o=>S.lang==='en'?o.en:o.ja;
-const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 let HISTMEM=[];
 function loadHist(){try{const j=localStorage.getItem('sc300_history_v1');if(j)return JSON.parse(j);}catch(e){}return HISTMEM;}
 function storeHist(h){HISTMEM=h;try{localStorage.setItem('sc300_history_v1',JSON.stringify(h));}catch(e){}}
-const plain=h=>{const d=document.createElement('div');d.innerHTML=String(h).replace(/<br\s*\/?>/g,' / ').replace(/<\/(li|tr|p|div|td|th)>/g,' ');return d.textContent.replace(/\s+/g,' ').trim();};
+const plain=h=>{const s=String(h).replace(/<br\s*\/?>/g,' / ').replace(/<\/(li|tr|p|div|td|th)>/g,' ');const d=new DOMParser().parseFromString(s,'text/html');return (d.body?d.body.textContent:'').replace(/\s+/g,' ').trim();};
 /* ===== v7: 分野タグ / 弱点分析 / 似た問題 / キーボード操作 ===== */
 const TOPICS=[['usr','ユーザー・グループ・ライセンス',1],['ext','外部 ID(ゲスト・B2B)',1],['hyb','ハイブリッド ID(同期・Entra Connect)',1],['rol','管理者ロール・管理単位・Azure RBAC',1],['mfa','認証方法(MFA・SSPR・パスワード保護)',2],['cap','条件付きアクセス',2],['idp','Identity Protection(リスク)',2],['app','アプリ登録・エンタープライズ アプリ・同意',3],['mid','マネージド ID・アプリ プロキシ・Defender for Cloud Apps',3],['gov','ID ガバナンス(エンタイトルメント・アクセス レビュー)',4],['pim','Privileged Identity Management',4],['mon','監視・ログ・診断',4]];
 const DOMS={1:'Microsoft Entra ID の ID の実装',2:'認証とアクセス管理の実装',3:'ワークロード ID の計画と実装',4:'ID ガバナンスの計画と実装'};
@@ -2003,12 +2005,6 @@ const setTag=q=>'No.'+q.no;
 function bookStats(){let ok=0,ng=0;const b=getBook();ALLARR.forEach(q=>{const e=b[q.key];if(e){if(e.r==='ok')ok++;else ng++;}});return{ok,ng,nw:ALLARR.length-ok-ng,n:ALLARR.length};}
 
 /* ---- 記録のバックアップ(書き出し/読み込み) ---- */
-function exportAll(){
- const o={};try{Object.keys(localStorage).filter(k=>k.indexOf('sc300_')===0&&k!=='sc300_progress_v1').forEach(k=>{o[k]=localStorage.getItem(k);});}catch(e){}
- const d=new Date(),z=n=>String(n).padStart(2,'0');
- const name='SC300_records_'+d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+'.json';
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
-}
 function mergeEntry(a,b){
  if(!a)return b;if(!b)return a;
  const seen=new Set(),hist=[];(a.hist||[]).concat(b.hist||[]).forEach(h=>{if(h&&!seen.has(h.t)){seen.add(h.t);hist.push(h);}});hist.sort((x,y)=>x.t-y.t);
@@ -2033,20 +2029,127 @@ function mergeRecords(o){
  });
  return nb;
 }
-function importAll(inp){
- const f=inp.files&&inp.files[0];if(!f)return;
- const r=new FileReader();r.onload=()=>{try{
-  const o=JSON.parse(r.result);const ks=Object.keys(o).filter(k=>k.indexOf('sc300_')===0);
-  if(!ks.length)throw new Error('記録が見つかりません');
-  if(!confirm('記録ファイル('+ks.length+' 項目)を読み込み、現在の記録とマージします。\n(同じ問題の正解/不正解の回数は、二重に数えないよう履歴を突き合わせて統合します。メモは両方を残します)\nよろしいですか?'))return;
-  const nb=mergeRecords(o);BOOKC=null;MARKC=null;NOTEC=null;STATMEM={};alert('マージして読み込みました('+nb+' 項目)。画面を更新します。');location.reload();
- }catch(e){alert('読み込めませんでした: '+e.message);}};
- r.readAsText(f);inp.value='';
+/* ===== v8: 書き出し / 読み込み(上書き or マージを選択) ===== */
+function collectRecords(){
+ const o={};
+ try{Object.keys(localStorage).filter(k=>k.indexOf('sc300_')===0&&k!=='sc300_progress_v1').forEach(k=>{o[k]=localStorage.getItem(k);});}catch(e){}
+ return o;
 }
+function recFileName(){const d=new Date(),z=n=>String(n).padStart(2,'0');return 'SC300_records_'+d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+'_'+z(d.getHours())+z(d.getMinutes())+'.json';}
+async function exportAll(){
+ const o=collectRecords();const n=Object.keys(o).length;
+ if(!n){alert('書き出す記録がまだありません。');return;}
+ o._meta=JSON.stringify({app:'SC300',ver:8,exported:Date.now(),questions:ALLARR.length});
+ const text=JSON.stringify(o),name=recFileName();
+ // EXE 版: 保存ダイアログ(Python 側)
+ if(window.pywebview&&pywebview.api&&pywebview.api.save_text){
+  try{const r=await pywebview.api.save_text(name,text);if(r)alert('記録を書き出しました。\n'+r);}catch(e){alert('書き出せませんでした: '+e);}
+  return;
+ }
+ // ブラウザー: 保存先を選べる場合は選ぶ。なければ通常のダウンロード
+ if(window.showSaveFilePicker){
+  try{const h=await showSaveFilePicker({suggestedName:name,types:[{description:'SC-300 記録 (JSON)',accept:{'application/json':['.json']}}]});const w=await h.createWritable();await w.write(text);await w.close();alert('記録を書き出しました。');return;}
+  catch(e){if(e&&e.name==='AbortError')return;}
+ }
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);
+}
+function pickImport(){
+ if(window.pywebview&&pywebview.api&&pywebview.api.open_text){
+  pywebview.api.open_text().then(t=>{if(t)importText(t);}).catch(e=>alert('読み込めませんでした: '+e));
+  return;
+ }
+ const i=document.getElementById('impfile');if(i)i.click();
+}
+function importFile(inp){
+ const f=inp.files&&inp.files[0];if(!f)return;
+ const r=new FileReader();r.onload=()=>importText(String(r.result));r.onerror=()=>alert('ファイルを読み込めませんでした。');r.readAsText(f);inp.value='';
+}
+
+/* ---- 読み込む内容の検査(想定外の型・存在しない問題・長すぎる文字列は捨てる) ---- */
+const _num=(v,max)=>(typeof v==='number'&&isFinite(v)&&v>=0)?Math.min(v,max||1e13):0;
+const _str=(v,n)=>typeof v==='string'?v.slice(0,n):'';
+function sanEntry(e){
+ if(!e||typeof e!=='object')return null;
+ const o={r:e.r==='ok'?'ok':'ng',n:_num(e.n,1e6),okN:_num(e.okN,1e6),ngN:_num(e.ngN,1e6),t:_num(e.t)};
+ if(typeof e.sel==='string')o.sel=_str(e.sel,400);
+ if(typeof e.e==='number')o.e=_num(e.e,1e4);if(typeof e.m==='number')o.m=_num(e.m,1e4);
+ if(Array.isArray(e.hist))o.hist=e.hist.slice(-50).filter(h=>h&&typeof h==='object').map(h=>({t:_num(h.t),ok:!!h.ok,sel:_str(h.sel,400)}));
+ return o;
+}
+function sanitizeRec(k,str){
+ let v;try{v=JSON.parse(str);}catch(e){return undefined;}
+ if(v===null||typeof v!=='object')return undefined;
+ const byQ=(fn)=>{const o={};if(Array.isArray(v))return undefined;Object.keys(v).forEach(q=>{if(!ALLQ[q])return;const x=fn(v[q]);if(x!==null&&x!==undefined)o[q]=x;});return o;};
+ let out;
+ if(k==='sc300_qbook_v1'||k==='sc300_qstat_v1')out=byQ(sanEntry);
+ else if(k==='sc300_bookmarks_v1')out=byQ(x=>typeof x==='number'?_num(x):null);
+ else if(k==='sc300_notes_v1')out=byQ(x=>typeof x==='string'&&x.trim()?x.slice(0,20000):null);
+ else if(k==='sc300_history_v1'){
+  if(!Array.isArray(v))return undefined;
+  out=v.slice(0,80).filter(h=>h&&typeof h==='object'&&typeof h.t==='number').map(h=>({t:_num(h.t),set:_str(h.set,20),mode:_str(h.mode,20),total:_num(h.total,1e4),ok:_num(h.ok,1e4),scaled:_num(h.scaled,1000),pass:!!h.pass,
+   okIds:Array.isArray(h.okIds)?h.okIds.slice(0,1000).map(x=>_str(x,20)):[],
+   wrong:Array.isArray(h.wrong)?h.wrong.slice(0,1000).map(w=>({id:_str(w&&w.id,20),no:_num(w&&w.no,1e4),stem:_str(w&&w.stem,400),your:_str(w&&w.your,2000),correct:_str(w&&w.correct,2000),exp:_str(w&&w.exp,2000)})):[]}));
+ }
+ else if(k==='sc300_bookui_v1'){
+  if(Array.isArray(v))return undefined;
+  const F=['all','unok','new','ng','ok','split','mark','memo'],C=['all','1','2','3','last'];
+  out={view:v.view==='list'?'list':'one',f:F.includes(v.f)?v.f:'all',ngc:C.includes(v.ngc)?v.ngc:'all',pos:_num(v.pos,1e4),q:_str(v.q,200),lang:v.lang==='en'?'en':'ja'};
+  if(v.ans&&typeof v.ans==='object'&&!Array.isArray(v.ans)){const a={};Object.keys(v.ans).slice(0,2000).forEach(i=>{if(!/^\d+$/.test(i))return;const x=v.ans[i];const ok=y=>y===null||['number','boolean'].includes(typeof y);if(ok(x)||(Array.isArray(x)&&x.length<30&&x.every(ok)))a[i]=x;});out.ans=a;}
+ }
+ else return undefined;
+ return out===undefined?undefined:JSON.stringify(out);
+}
+function importText(text){
+ let o;try{o=JSON.parse(text);}catch(e){alert('読み込めませんでした: JSON として読めないファイルです。');return;}
+ if(!o||typeof o!=='object'||Array.isArray(o)){alert('読み込めませんでした: 記録ファイルの形式ではありません。');return;}
+ const clean={};
+ Object.keys(o).filter(k=>k.indexOf('sc300_')===0&&typeof o[k]==='string'&&k!=='sc300_progress_v1').forEach(k=>{const v=sanitizeRec(k,o[k]);if(v!==undefined)clean[k]=v;});
+ if(!Object.keys(clean).length){alert('有効な記録が見つかりませんでした。');return;}
+ showImportDialog(clean);
+}
+function recSummary(map){
+ const cnt=k=>{try{const v=JSON.parse(map[k]||'null');return v?(Array.isArray(v)?v.length:Object.keys(v).length):0;}catch(e){return 0;}};
+ return {book:cnt('sc300_qbook_v1'),stat:cnt('sc300_qstat_v1'),hist:cnt('sc300_history_v1'),mark:cnt('sc300_bookmarks_v1'),note:cnt('sc300_notes_v1')};
+}
+function showImportDialog(clean){
+ const old=document.getElementById('imp');if(old)old.remove();
+ const cur=recSummary(collectRecords()),inc=recSummary(clean);
+ const row=(l,a,b)=>`<tr><td>${l}</td><td style="text-align:right">${a}</td><td style="text-align:right">${b}</td></tr>`;
+ const d=document.createElement('div');d.id='imp';d.className='modal';
+ d.innerHTML=`<div class="box" style="max-width:560px"><div class="mh"><b>記録の読み込み</b><button class="btn sm" onclick="document.getElementById('imp').remove()">✕ キャンセル</button></div><div class="mb">
+ <table class="kt"><tr><th></th><th style="text-align:right">いまの記録</th><th style="text-align:right">読み込むファイル</th></tr>${row('問題集の記録(問題数)',cur.book,inc.book)}${row('試験形式の記録(問題数)',cur.stat,inc.stat)}${row('試験の履歴(回数)',cur.hist,inc.hist)}${row('見直しマーク',cur.mark,inc.mark)}${row('メモ',cur.note,inc.note)}</table>
+ <p style="margin:12px 0 6px"><b>どちらで読み込みますか?</b></p>
+ <p class="note" style="margin:0 0 6px"><b>マージ(推奨)</b>: いまの記録に足し合わせます。同じ問題は履歴を突き合わせて正解/不正解の回数を統合し、メモは両方を残します。同じファイルを何度読み込んでも二重に数えません。</p>
+ <p class="note" style="margin:0 0 12px"><b>上書き</b>: いまの記録をすべて消して、ファイルの内容に置き換えます(元に戻せません)。</p>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" id="impMerge">マージして読み込む</button><button class="btn" style="border-color:#a4262c;color:#a4262c" id="impOver">上書きして読み込む</button></div></div></div>`;
+ document.body.appendChild(d);
+ d.onclick=e=>{if(e.target===d)d.remove();};
+ document.getElementById('impMerge').onclick=()=>{d.remove();applyImport(clean,'merge');};
+ document.getElementById('impOver').onclick=()=>{
+  if(!confirm('いまの記録(問題集 '+cur.book+' 問・試験形式 '+cur.stat+' 問・履歴 '+cur.hist+' 回・メモ '+cur.note+' 件)をすべて消去し、ファイルの内容に置き換えます。\n元に戻せません。よろしいですか?\n(残したい場合は、先に「書き出し」で保存してください)'))return;
+  d.remove();applyImport(clean,'overwrite');
+ };
+}
+function applyImport(clean,mode){
+ let n=0;
+ try{
+  if(mode==='overwrite'){
+   Object.keys(collectRecords()).forEach(k=>localStorage.removeItem(k));
+   Object.keys(clean).forEach(k=>{localStorage.setItem(k,clean[k]);n++;});
+  }else n=mergeRecords(clean);
+ }catch(e){alert('読み込み中にエラーが発生しました: '+e);return;}
+ // 再読み込みはしない(EXE 版は起動時に読み込んだ保存データが古いまま残り、反映が消えてしまうため)
+ BOOKC=null;MARKC=null;NOTEC=null;STATMEM={};S.bg={};S.bans={};S.bk.frozen=null;S.bk.dom=null;
+ restoreBook();enterBook();
+ S.screen='book';S.homeTab='book';render();window.scrollTo(0,0);
+ alert((mode==='overwrite'?'上書きして':'マージして')+'読み込みました('+n+' 項目)。');
+}
+
 function homeShell(tab,inner){
  return `<div class="home">
  <div class="hero"><div><h1>SC-300 模擬問題</h1><div class="sub">Microsoft Identity and Access Administrator ― 全 ${ALLARR.length} 問(ケース スタディ ${ALLARR.filter(q=>String(Array.isArray(q.stem)?q.stem[0]:q.stem).includes('ケース スタディ')).length} 問・シリーズ ${ALLARR.filter(q=>q.series).length} 問を含む)</div></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="openHistory()">📒 記録</button><button class="btn" title="学習記録をファイルに保存します" onclick="exportAll()">💾 書き出し</button><label class="btn" style="cursor:pointer" title="書き出したファイルから記録を復元します">📂 読み込み<input type="file" accept=".json,application/json" style="display:none" onchange="importAll(this)"></label><button class="btn" onclick="openWeak()">📊 弱点分析</button><button class="btn kbhint" title="キーボード操作の一覧" onclick="toggleKbHelp()">⌨ ?</button></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="openHistory()">📒 記録</button><button class="btn" title="学習記録をファイルに保存します" onclick="exportAll()">💾 書き出し</button><button class="btn" title="書き出したファイルから記録を読み込みます(上書き/マージを選べます)" onclick="pickImport()">📂 読み込み</button><input id="impfile" type="file" accept=".json,application/json" style="display:none" onchange="importFile(this)"><button class="btn" onclick="openWeak()">📊 弱点分析</button><button class="btn kbhint" title="キーボード操作の一覧" onclick="toggleKbHelp()">⌨ ?</button></div></div>
  <div class="tabsx"><button class="tabx ${tab==='book'?'on':''}" onclick="setTab('book')">問題集<small>いつでも解ける・1 問ごとに記録</small></button><button class="tabx ${tab==='exam'?'on':''}" onclick="setTab('exam')">試験形式<small>10〜70 問をランダムに・採点</small></button></div>
  <div class="panel">${inner}</div></div>`;
 }
