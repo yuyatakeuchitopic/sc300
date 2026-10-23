@@ -56,10 +56,10 @@ table.yn th.c,table.yn td.c{text-align:center;width:80px}
 .ctr.v{justify-content:center}
 .mt{display:flex;gap:30px;flex-wrap:wrap;margin-top:8px}
 .mt .pool{min-width:260px}
-.mt .slots{flex:1;min-width:300px}
-.slot{display:flex;gap:12px;align-items:center;margin:10px 0}
-.slot .l{flex:1;text-align:right;font-weight:600}
-.slot .b{width:280px;min-height:42px;border:2px dashed #3aa0d8;padding:8px 10px;cursor:pointer;background:#fff}
+.mt .slots{flex:1 1 480px;min-width:300px}
+.slot{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 0}
+.slot .l{flex:1 1 220px;min-width:200px;text-align:right;font-weight:600;overflow-wrap:anywhere}
+.slot .b{flex:0 1 280px;width:280px;max-width:100%;min-height:42px;box-sizing:border-box;border:2px dashed #3aa0d8;padding:8px 10px;cursor:pointer;background:#fff}
 .slot .b.f{border-style:solid}
 .foot{border-top:1px solid var(--line);padding:12px 20px;display:flex;gap:10px;align-items:center;background:#faf9f8;flex-wrap:wrap}
 .foot .sp{flex:1}
@@ -115,7 +115,7 @@ details.rs .in{padding:8px 18px 14px;border-top:1px solid var(--line)}
 .ex .nxt span.g{background:#4a7a29;color:#fff}
 .ex .tree div{padding:1px 0}
 .ex .kv{display:grid;grid-template-columns:170px 1fr;gap:2px 0}
-@media(max-width:820px){.wrap{flex-direction:column}.side{width:100%;position:static}.slot .b{width:200px}}
+@media(max-width:820px){.wrap{flex-direction:column}.side{width:100%;position:static}.slot .l{text-align:left;flex-basis:100%}.slot .b{flex:1 1 100%;width:auto}}
 
 /* ===== UI refresh ===== */
 :root{--blue:#0f6cbd;--blue-d:#0b4f8a;--bg:#f4f6f9;--line:#dfe3e8;--ink:#1f2933;--sub:#64707d;--ok:#0e7a3d;--ng:#c4314b;--new:#8a94a0}
@@ -222,10 +222,125 @@ details.rs{border-radius:10px;overflow:hidden}
 .mob .center{padding:10px}.mob .wt{font-size:12px}.mob .wb{display:none}.mob .wa{white-space:normal}.mob .wt .chip{margin:2px 0}
 .mob .memoline{display:flex;flex-wrap:wrap;gap:4px 14px}.mob .memolink{min-height:36px}
 .mob .wt tr:first-child{display:none}.mob .wt tr{display:block;border-bottom:1px solid #e9edf2;padding:8px 0}.mob .wt td{display:inline-block;border:0;padding:2px 10px 2px 0;width:auto}.mob .wt .wn{display:block;width:100%;min-width:0}.mob .wc::before{content:attr(data-l) " ";color:#8a98a8;font-size:11px}.mob .wt .wa{display:block;padding-top:6px}.mob .wsum>div{min-width:120px}
+
+/* v8.2: 画面幅に合わせて広がるレイアウト */
+.home{max-width:min(100%,2400px);padding:0 clamp(12px,2.5vw,48px)}
+.wrap{max-width:min(100%,2400px);padding:0 clamp(12px,2.5vw,48px)}
+.center{max-width:min(96vw,1800px)!important}
+.bgrid{grid-template-columns:minmax(0,1fr) clamp(200px,17vw,300px)}
+.bgrid .side{width:auto}
+.wrap .side{width:clamp(210px,17vw,300px)}
+@media(max-width:900px){.bgrid{grid-template-columns:1fr}}
+@media(max-width:820px){.wrap .side{width:100%}}
+.palh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.palt{border:1px solid #c9d3de;background:#fff;border-radius:999px;font:inherit;font-size:12px;color:#4a5a6b;padding:1px 10px;cursor:pointer}
+.palt:hover{background:#eff6fc}
+.side.closed{display:flex;flex-direction:column;overflow:hidden;position:static}
+.side.closed .palbody{flex:1;min-height:0;overflow-y:auto;padding-right:2px}
+
+.bgrid{grid-template-columns:minmax(0,1fr) var(--palw,clamp(200px,17vw,300px))}
+.wrap .side{width:var(--palw,clamp(210px,17vw,300px))}
+.side{position:relative}
+.side:not(.closed){position:sticky}
+.side.closed{position:relative;top:auto}
+.palrz{position:absolute;left:0;top:0;bottom:0;width:9px;cursor:col-resize;touch-action:none;z-index:3;border-radius:14px 0 0 14px}
+.palrh{position:absolute;left:0;right:0;bottom:0;height:9px;cursor:row-resize;touch-action:none;z-index:3;border-radius:0 0 14px 14px}
+.palrz:hover,.palrz.on{background:linear-gradient(90deg,#3aa0d8 0,#3aa0d8 3px,transparent 3px)}
+.palrh:hover,.palrh.on{background:linear-gradient(0deg,#3aa0d8 0,#3aa0d8 3px,transparent 3px)}
+@media(max-width:900px){.bgrid .palrz{display:none}.bgrid{grid-template-columns:1fr}}
+@media(max-width:820px){.wrap .palrz{display:none}}
+
+/* v8.4: Azure / Microsoft Entra ポータル風の展示 */
+.az{font-family:"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;font-size:13px;color:#323130;background:#fff;padding:12px 16px;line-height:1.5}
+.az a,.azl{color:#0078d4;text-decoration:none}
+.azi{color:#605e5c;font-size:12px}
+.azT{font-size:18px;font-weight:400;margin:2px 0}
+.az>.azT.big{font-size:22px;font-weight:600}
+.azcol .azT.big{font-size:28px;font-weight:400}
+.azS{color:#605e5c;font-size:12px;margin-bottom:4px}
+.azh{font-weight:600;font-size:14px;margin:16px 0 6px}.azh.nb{font-weight:400;font-size:15px;margin:14px 0 4px}.azh.sm{font-size:12px}.azh.ans{font-size:16px;font-weight:700;margin:0 0 6px}
+.azsec{font-size:17px;font-weight:400;margin:20px 0 8px}
+.azr{display:grid;grid-template-columns:minmax(150px,260px) 1fr;gap:6px 22px;align-items:center;margin:10px 0}
+.azr .lb.big{font-size:14px}.azc{min-width:0}.rq{color:#a4262c}
+.azin{display:inline-block;border:1px solid #8a8886;background:#fff;padding:2px 8px;min-height:22px;position:relative;font-size:12.5px;box-sizing:border-box;max-width:100%}
+.azin.pu{border-color:#8a3da5}.azin.dis{background:#f3f2f1;color:#605e5c;border-color:#c8c6c4}.azin.ta{min-height:56px}
+.azin .ok{color:#107c10;float:right;font-style:normal;margin-left:10px}.azin .cal,.azin .dd,.azin .cp{float:right;color:#605e5c;font-style:normal;margin-left:10px}
+.mx{text-align:right;max-width:140px;font-size:12px}
+.pill{display:inline-flex;border:1px solid #605e5c;border-radius:16px;overflow:hidden;font-size:12px;background:#fff;vertical-align:middle}
+.pill span{padding:1px 14px;border-radius:14px;white-space:nowrap}.pill span.on{background:#0078d4;color:#fff}.pill.pu span.on{background:#5c1a75}
+.pill.wide{display:flex;width:100%;max-width:420px}.pill.wide span{flex:1;text-align:center}
+.azrd{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.azrd b{width:14px;height:14px;border:1px solid #323130;border-radius:50%;flex:none;position:relative;margin-top:3px;background:#fff}
+.azrd b.on{border-color:#0078d4}.azrd b.on::after{content:"";position:absolute;inset:2px;background:#0078d4;border-radius:50%}
+.azrd.s{margin:4px 0}
+.azck{display:flex;gap:8px;align-items:center;margin:9px 0}
+.azck b{width:14px;height:14px;border:1px solid #323130;background:#fff;font-size:11px;line-height:12px;text-align:center;flex:none;color:#fff;font-weight:700}
+.azck b.on{background:#0078d4;border-color:#0078d4}.azck.dis{color:#a19f9d}.azck.dis b{border-color:#c8c6c4}
+.q{background:#0063b1;color:#fff;border-radius:50%;width:15px;height:15px;display:inline-block;text-align:center;font-style:normal;font-size:10px;line-height:15px}
+.azck .w{color:#d08700;font-style:normal}
+.aztabs{display:flex;gap:18px;border-bottom:1px solid #edebe9;margin:6px 0 10px;font-size:12.5px;flex-wrap:wrap}
+.aztabs span{padding:6px 2px}.aztabs span.on{border-bottom:2px solid #0078d4;font-weight:600}
+.azbc{font-size:12.5px;color:#605e5c;margin:2px 0 8px}.azbc a{color:#0078d4}
+.azp{margin:8px 0}.azp.sm{font-size:12px}
+.azn{margin:10px 0 3px}.azh2{margin:18px 0 4px;font-size:14px}
+.azb{position:relative;border-top:1px solid #8a8886;border-bottom:1px solid #8a8886;margin-top:-1px;padding:7px 10px;background:#fff}
+.azb.hl{background:#fffbb5}.azcols.g .azb.hl{background:#e4dcdc}
+.azb .bt{font-size:13px}.azb .bs{color:#0078d4;font-size:13px;padding-top:3px}.azb .bs.pl{color:#323130;font-size:15px}
+.azb .ch{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-style:normal;font-size:22px;color:#323130}
+.azb .new{background:#e6f3e6;color:#107c10;font-weight:700;font-size:10px;padding:0 5px;border:1px solid #107c10;margin-left:4px}
+.azcols{display:flex;gap:26px;align-items:flex-start}.azcol{flex:1;min-width:0}
+.azcols.g .azcol:first-child{flex:0 0 52%;padding-right:14px;border-right:1px solid #edebe9}
+.azinex{display:flex;gap:18px;margin:12px 0 8px}.azinex b{border-bottom:2px solid #0078d4;padding-bottom:3px}
+.azin2{margin-left:22px}.azsel{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #8a8886;border-bottom:1px solid #8a8886;padding:6px 8px;margin:10px 0}
+.azusr{display:flex;gap:10px;align-items:center;margin-top:8px}.dots{color:#605e5c;margin-left:6px}
+.av{display:inline-flex;width:34px;height:34px;border-radius:50%;background:#e8548f;color:#fff;align-items:center;justify-content:center;font-size:12px;flex:none}
+.azfoot{border-top:1px solid #d2d0ce;margin-top:16px;padding-top:12px}
+.azcol.grant .x{float:right;font-size:16px}
+.azbtn{display:inline-block;background:#0078d4;color:#fff;padding:5px 22px;font-size:13px}.azbtn.dis{background:#f3f2f1;color:#a19f9d}
+.azt{border-collapse:collapse;width:100%;font-size:13px}
+.azt th{text-align:left;font-weight:600;font-size:12px;padding:6px 8px;border-bottom:1px solid #d2d0ce}
+.azt td{padding:8px;border-bottom:1px solid #edebe9}.azt td.lk{color:#0078d4}
+.azt.pim th{font-size:11px;letter-spacing:.05em}.azt.pim th:last-child,.azt.pim td:last-child{width:34%}
+.azed{margin:10px 0;color:#323130}
+.aztool{display:flex;gap:20px;margin:8px 0;padding-bottom:8px;border-bottom:1px solid #edebe9;font-size:12.5px;flex-wrap:wrap}
+.azsearch{border:1px solid #8a8886;padding:3px 8px;margin:4px 0 8px;font-size:12px;color:#605e5c}
+.azwarn{margin:6px 0 8px}.azwarn i{color:#d08700;font-style:normal}
+.azwarn.y{background:#fff4ce;padding:8px 10px;border:1px solid #f3e0a0;font-size:12px;margin:10px 0}
+.azsl{display:inline-block;width:190px;height:4px;background:#c8c6c4;vertical-align:middle;position:relative;margin-right:8px}
+.azsl i{position:absolute;left:46%;top:-6px;width:14px;height:14px;border:2px solid #323130;border-radius:50%;background:#fff}
+.azw{border:1px solid #333;background:#fff;font-family:"Segoe UI","Yu Gothic UI",sans-serif;font-size:12px;color:#222}
+.azw .wzt{background:#222;color:#fff;padding:6px 10px;display:flex;justify-content:space-between}
+.azw .wzb{display:flex;min-height:300px}
+.azw .wzn{width:160px;border-right:1px solid #ccc;padding:10px 0;flex:none}
+.azw .wzn div{padding:3px 12px;font-size:11px}.azw .wzn .sub{padding-left:26px}.azw .wzn .gy{color:#999}.azw .wzn .on{background:#0063b1;color:#fff}
+.azw .wzc{flex:1;padding:14px 22px;min-width:0}.azw h2{font-size:22px;margin:4px 0 12px;font-weight:700}
+.azw .wzf{background:#222;padding:10px;display:flex;justify-content:flex-end;gap:14px}
+.azw .g1{background:#d6d6d6;color:#333;padding:5px 42px}.azw .g2{background:#3d7a29;color:#fff;padding:5px 42px}
+.azul{margin:6px 0 10px;padding-left:20px;font-size:12px}
+.azfl{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}.gbtn{background:#3d7a29;color:#fff;padding:3px 14px}.dd0{min-width:200px}
+.aztree{border:1px solid #888;padding:6px 10px;margin-top:8px;font-size:11px;min-height:200px}.aztree .l1{padding-left:18px}
+.azdev{display:flex;gap:14px;align-items:flex-start}
+.azdev .dn{width:190px;font-size:12px;border-right:1px solid #edebe9;flex:none}.azdev .dn div{padding:4px 8px}
+.azdev .dn .on{background:#edebe9;font-weight:600}.azdev .dn .dh{font-weight:600;margin-top:8px}.azdev .dn.sm{width:160px;font-size:11px}
+.azdev .dm{flex:1;min-width:0}.azdev .dm.sm{font-size:12px}
+.azsa{width:215px;font-size:11px;flex:none}.azsa .u{display:flex;gap:6px;align-items:center;padding:5px;margin:2px 0}.azsa .u.sel{background:#f1e8bd}.azsa .av{width:26px;height:26px;font-size:10px}
+.azuser{display:flex;gap:14px;align-items:center;margin:8px 0}
+.avb{display:inline-flex;width:72px;height:72px;border-radius:50%;background:#8a1fa0;color:#fff;font-size:26px;align-items:center;justify-content:center}
+.azcols.g2{gap:30px;margin:10px 0}
+.azkv{display:grid;grid-template-columns:150px 1fr;gap:8px 10px;font-size:12px;flex:1}.azkv2{display:grid;grid-template-columns:130px 40px;gap:8px;font-size:12px}.azkv2 .lk{color:#0078d4}
+.azfeed{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.azfeed>div{border:1px solid #edebe9;box-shadow:0 1px 4px rgba(0,0,0,.12);padding:10px;font-size:12px}.azfeed .gn{color:#107c10}.azfeed .fl{margin-top:16px}
+.azlogo{display:inline-flex;width:72px;height:72px;background:#e81123;color:#fff;font-size:28px;align-items:center;justify-content:center;margin-bottom:4px}
+.azcpb{display:inline-block;width:26px;height:26px;background:#0078d4;color:#fff;text-align:center;line-height:26px;vertical-align:middle;margin-left:4px}
+.azlist{border:1px solid #8a8886;min-height:120px;padding:6px 8px;position:relative;max-width:420px}.azlist .ok{position:absolute;right:8px;top:4px;color:#107c10;font-style:normal}
+.azgrp{margin:10px 0;font-size:13px}.azbox .azr{border:1px solid #8a8886;margin:8px 0;padding:3px 6px;grid-template-columns:minmax(150px,230px) 1fr}
+.azrule{border-top:1px solid #d2d0ce;margin:10px 0}.azdt{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:560px}
+.lb2{margin-top:4px}
+@media(max-width:700px){.azr{grid-template-columns:1fr}.azcols,.azdev{flex-direction:column}.azcols.g .azcol:first-child{flex:none;border-right:0}.azfeed{grid-template-columns:1fr}.azw .wzb{flex-direction:column}.azw .wzn{width:auto;border-right:0}.azsa{width:100%}}
 </style>
 </head>
 <body>
-<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8</span></span><span class="sp"></span><span id="topR"></span></div>
+<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8.4</span></span><span class="sp"></span><span id="topR"></span></div>
 <div id="app"></div>
 
 <script>
@@ -631,6 +746,69 @@ Object.assign(JT,{
 'c04034_0':'<div class="ex"><h3>ロール設定の詳細 - Application Administrator</h3><div class="sec">アクティブ化</div>'+jtab(['設定','状態'],[['アクティブ化の最大期間 (時間)','5 時間'],['アクティブ化時に理由を要求','はい'],['アクティブ化時にチケット情報を要求','いいえ'],['アクティブ化に承認を要求','はい'],['承認者','0 メンバー、1 グループ']])+'<div class="sec">割り当て</div>'+jtab(['設定','状態'],[['永続的な対象の割り当てを許可','いいえ'],['対象の割り当ての有効期限','3 か月'],['永続的なアクティブな割り当てを許可','いいえ'],['アクティブな割り当ての有効期限','1 か月'],['アクティブな割り当てに Azure MFA を要求','いいえ'],['アクティブな割り当てに理由を要求','はい']])+'</div>',
 'c04034_1':'<div class="ex"><h3>割り当ての追加(Privileged Identity Management | Azure AD ロール)</h3>'+jtab(['項目','設定'],[['割り当ての種類','対象 (Eligible)'],['最大許可期間','3 か月'],['割り当ての開始','2021/01/01 12:00:00 AM'],['割り当ての終了','2021/01/31 11:59:00 PM']])+'</div>',
 'c04035_0':'<div class="ex"><h3>アクセス レビューの設定</h3>'+jtab(['項目','設定'],[['レビュー担当者','メンバー (自分)'],['<b>完了時の設定</b>',''],['結果をリソースに自動適用する','有効'],['レビュー担当者が応答しない場合','変更なし'],['拒否されたゲスト ユーザーに適用するアクション','ユーザーのメンバーシップをリソースから削除する'],['<b>詳細設定</b>',''],['推奨事項を表示する','有効'],['承認時に理由を要求する','有効'],['メール通知','有効'],['リマインダー','有効']])+'</div>'
+});
+/* ===== v8.4: 展示(Exhibit)の再現を、Azure / Microsoft Entra ポータルの見た目に近づける(jt*.js の同じキーを上書き) ===== */
+const azi='<span class="azi">ⓘ</span>';
+const azA=t=>'<span class="azl">'+t+'</span>';
+const azRow=(l,c,info,req)=>'<div class="azr"><div class="lb">'+l+(req?' <span class="rq">*</span>':'')+(info?' '+azi:'')+'</div><div class="azc">'+c+'</div></div>';
+const azPill=(items,on,pu)=>'<span class="pill'+(pu?' pu':'')+'">'+items.map((x,i)=>'<span class="'+(i===on?'on':'')+'">'+x+'</span>').join('')+'</span>';
+const azRad=(items,on)=>items.map((x,i)=>'<div class="azrd"><b class="'+(i===on?'on':'')+'"></b><span>'+x+'</span></div>').join('');
+const azIn=(t,o)=>{o=o||{};return '<span class="azin'+(o.dis?' dis':'')+(o.pu?' pu':'')+'" style="'+(o.w?'min-width:'+o.w+'px;':'')+(o.blk?'display:block;':'')+'">'+t+(o.ok?'<i class="ok">✓</i>':'')+(o.cal?'<i class="cal">▦</i>':'')+(o.dd?'<i class="dd">⌵</i>':'')+(o.copy?'<i class="cp">⧉</i>':'')+'</span>';};
+const azCk=(on,t,o)=>{o=o||{};return '<div class="azck'+(o.dis?' dis':'')+'"><b class="'+(on?'on':'')+'">'+(on?'✓':'')+'</b><span>'+t+'</span>'+(o.help?'<i class="q">?</i>':'')+(o.warn?'<i class="w">⚠</i>':'')+(o.info?' '+azi:'')+'</div>';};
+const azTitle=(t,sub,big)=>'<div class="azT'+(big?' big':'')+'">'+t+'</div>'+(sub?'<div class="azS">'+sub+'</div>':'');
+const azH=t=>'<div class="azh">'+t+'</div>';
+const azSec=t=>'<div class="azsec">'+t+'</div>';
+const azTabs=(items,on)=>'<div class="aztabs">'+items.map((x,i)=>'<span class="'+(i===on?'on':'')+'">'+x+'</span>').join('')+'</div>';
+const azBlade=(t,sub,o)=>'<div class="azb'+(o&&o.hl?' hl':'')+(o&&o.arrow?' ar':'')+'"><div class="bt">'+t+' '+azi+'</div><div class="bs'+(o&&o.plain?' pl':'')+'">'+sub+'</div>'+(o&&o.arrow?'<i class="ch">›</i>':'')+'</div>';
+const azBtn=(t,dis)=>'<span class="azbtn'+(dis?' dis':'')+'">'+t+'</span>';
+const azTool=items=>'<div class="aztool">'+items.map(x=>'<span>'+x+'</span>').join('')+'</div>';
+const azTbl=(h,rows,o)=>'<table class="azt'+(o&&o.cls?' '+o.cls:'')+'"><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+rows.map(r=>'<tr>'+r.map((x,i)=>'<td'+(o&&o.link&&o.link.includes(i)?' class="lk"':'')+'>'+x+'</td>').join('')+'</tr>').join('')+'</table>';
+/* AAD Connect ウィザード */
+const azWiz=(sel,title,body,btn)=>{
+ const nav=[['ようこそ',0,1],['簡易設定'],['必要なコンポーネント'],['ユーザー サインイン'],['Azure AD に接続'],['同期'],['ディレクトリの接続',1],['Azure AD サインイン',1],['ドメイン/OU のフィルター処理',1],['ユーザーの識別',1],['フィルター処理',1],['オプション機能',1],['資格情報'],['AD FS ファーム'],['Azure AD ドメイン'],['構成'],['接続の確認']];
+ return '<div class="azw"><div class="wzt"><span>◆ Microsoft Azure Active Directory Connect</span><span>—&nbsp;&nbsp;✕</span></div><div class="wzb"><div class="wzn">'+nav.map(n=>'<div class="'+(n[0]===sel?'on ':'')+(n[1]?'sub ':'')+(n[2]?'gy':'')+'">'+n[0]+'</div>').join('')+'</div><div class="wzc"><h2>'+title+'</h2>'+body+'</div></div><div class="wzf"><span class="g1">前へ</span><span class="g2">'+btn+'</span></div></div>';
+};
+/* PIM のロール設定の詳細 */
+const azPim=(title,act,asg,o)=>{o=o||{};
+ const tb=(rows)=>'<table class="azt pim"><tr><th>設定</th><th>状態</th></tr>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td'+(r[2]?' class="lk"':'')+'>'+r[1]+'</td></tr>').join('')+'</table>';
+ return '<div class="az">'+(o.bc?'<div class="azbc">… › <a>Privileged Identity Management</a> › <a>ContosoAzureAD</a> › <a>User Administrator</a> ›</div>':'')+(title?'<div class="azT big">'+title+'</div><div class="azS">Privileged Identity Management | Azure AD ロール</div>':'')+'<div class="azed">✎ 編集</div>'+azH('アクティブ化')+tb(act)+azH('割り当て')+tb(asg)+'</div>';
+};
+const pimUA=(approvers,hrs)=>azPim('ロール設定の詳細 - User Administrator',[['アクティブ化の最大期間(時間)',hrs||'8 時間'],['アクティブ化時に理由を要求','はい'],['アクティブ化時にチケット情報を要求','いいえ'],['アクティブ化時に Azure MFA を要求','はい'],['アクティブ化に承認を要求','はい'],['承認者',approvers[0],approvers[1]]],[['永続的な対象の割り当てを許可','いいえ'],['対象の割り当ての有効期限','15 日'],['永続的なアクティブな割り当てを許可','いいえ'],['アクティブな割り当ての有効期限','1 か月'],['アクティブな割り当てに Azure MFA を要求','いいえ'],['アクティブな割り当てに理由を要求','いいえ']],{bc:1});
+/* 条件付きアクセスの「新規」ブレード */
+const azCaLeft=(o)=>'<div class="azcol">'+(o.bc?'<div class="azbc"><a>ホーム</a> › <a>条件付きアクセス | 概要</a> ›</div>':'')+azTitle(o.title||'新規',o.sub||'条件付きアクセス ポリシー',1)+'<p class="azp">'+(o.desc||'条件付きアクセスに基づいてユーザー アクセスを制御し、シグナルをまとめて判断し、組織のポリシーを適用します。')+' <a class="azl">詳細情報 ↗</a></p><div class="azn">名前 <span class="rq">*</span></div>'+azIn(o.name,{ok:1,pu:1,blk:1})+'<div class="azh2">割り当て</div>'+o.assign+'<div class="azh2">アクセス制御</div>'+o.ctl+(o.extra||'')+'</div>';
+
+Object.assign(JT,{
+'009_1':azWiz('オプション機能','オプション機能','<p class="azp sm">組織で必要な場合は、拡張機能を選択してください。</p>'+azCk(0,'Exchange ハイブリッド展開',{dis:1,help:1})+azCk(0,'Exchange メール パブリック フォルダー',{dis:1,help:1})+azCk(0,'Azure AD アプリと属性のフィルター処理',{help:1})+azCk(1,'パスワード ハッシュ同期',{help:1})+azCk(1,'パスワード ライトバック',{help:1})+azCk(0,'グループ ライトバック',{warn:1})+azCk(0,'デバイス ライトバック',{dis:1,help:1})+azCk(0,'ディレクトリ拡張属性の同期',{help:1})+'<p class="azp sm" style="margin-top:12px"><a class="azl">詳細</a> (オプション機能について)</p>','次へ'),
+'a012_1':azWiz('ドメイン/OU のフィルター処理','ドメインと OU のフィルター処理','<div class="azfl"><span>ディレクトリ:</span> <span class="azin dd0">contoso.com ⌵</span> <span class="gbtn">ドメインの更新</span> <i class="q">?</i></div><div class="azrd s"><b></b><span>すべてのドメインと OU を同期する</span></div><div class="azrd s"><b class="on"></b><span>選択したドメインと OU を同期する</span></div><div class="aztree"><div>▾ ☐ contoso.com</div>'+['Builtin','Computers','Domain Controllers','ForeignSecurityPrincipals','Infrastructure','LostAndFound','Managed Service Accounts'].map(x=>'<div class="l1">▷ ☐ '+x+'</div>').join('')+'<div class="l1">▷ ☑ OU1</div><div class="l1">▷ ☐ OU2</div><div class="l1">▷ ☐ Program Data</div><div class="l1">▷ ☐ System</div><div class="l1">▷ ☑ Users</div></div>','次へ'),
+'a012_2':azWiz('構成','構成の準備完了','<p class="azp sm">[インストール] をクリックすると、次の処理が行われます:</p><ul class="azul">'+['このコンピューターで同期サービスを構成する','パススルー認証用の Microsoft Azure AD Connect 認証エージェントをインストールする','パススルー認証を有効にする','ソース アンカー属性を構成する','sk220630outlook.onmicrosoft.com - AAD コネクタを構成する','contoso.com コネクタを構成する','パスワード ハッシュ同期を無効にする','パスワード ライトバックを有効にする','Azure AD エクスポート削除しきい値 (500) を有効にする'].map(x=>'<li>'+x+'</li>').join('')+'</ul>'+azCk(1,'構成の完了時に同期プロセスを開始する')+azCk(0,'ステージング モードを有効にする: 選択すると、AD または Azure AD にデータはエクスポートされません'),'インストール'),
+'021_0':'<div class="az">'+azSec('ゲストの招待設定')+'<div class="lb2">ゲストの招待の制限 '+azi+'</div><div>'+azA('詳細情報')+'</div>'+azRad(['組織内の全員(ゲストと管理者以外を含む)がゲスト ユーザーを招待できる(最も包括的)','メンバー ユーザーと、特定の管理者ロールが割り当てられたユーザーが、ゲスト ユーザーを招待できる(ゲストはメンバーのアクセス許可を持つ)','特定の管理者ロールが割り当てられたユーザーのみがゲスト ユーザーを招待できる','組織内の誰も(管理者を含む)ゲスト ユーザーを招待できない(最も制限が厳しい)'],1)+'<div class="lb2" style="margin-top:14px">ユーザー フローによるゲストのセルフサービス サインアップを有効にする '+azi+'</div><div>'+azA('詳細情報')+'</div>'+azPill(['はい','いいえ'],0)+azSec('外部ユーザーの脱退の設定')+'<div class="lb2">外部ユーザーが自分自身を組織から削除することを許可する(推奨) '+azi+'</div><div>'+azA('詳細情報')+'</div>'+azPill(['はい','いいえ'],0)+azSec('共同作業の制限')+'<div class="azwarn"><i>⚠</i> 招待を送信するときは、招待を許可するかブロックするかを判断するために、クロステナント アクセス設定も評価されます。 '+azA('詳細情報。')+'</div>'+azRad(['任意のドメインに招待を送信することを許可する(最も包括的)','指定したドメインへの招待を拒否する','指定したドメインにのみ招待を許可する(最も制限が厳しい)'],0)+'</div>',
+'a040_0':'<div class="az">'+azSec('ゲスト ユーザー アクセス')+'<div class="lb2">ゲスト ユーザー アクセスの制限 '+azi+'</div><div>'+azA('詳細情報')+'</div>'+azRad(['ゲスト ユーザーはメンバーと同じアクセス権を持つ(最も包括的)','ゲスト ユーザーはディレクトリ オブジェクトのプロパティとメンバーシップへのアクセスが制限される','ゲスト ユーザーのアクセスは自分自身のディレクトリ オブジェクトのプロパティとメンバーシップに制限される(最も制限が厳しい)'],1)+azSec('ゲストの招待設定')+'<div class="lb2">ゲストの招待の制限 '+azi+'</div><div>'+azA('詳細情報')+'</div>'+azRad(['組織内の全員(ゲストと管理者以外を含む)がゲスト ユーザーを招待できる(最も包括的)','メンバー ユーザーと、特定の管理者ロールが割り当てられたユーザーが、ゲスト ユーザーを招待できる(ゲストはメンバーのアクセス許可を持つ)','特定の管理者ロールが割り当てられたユーザーのみがゲスト ユーザーを招待できる','組織内の誰も(管理者を含む)ゲスト ユーザーを招待できない(最も制限が厳しい)'],1)+'<div class="lb2" style="margin-top:14px">ユーザー フローによるゲストのセルフサービス サインアップを有効にする '+azi+'</div><div>'+azA('詳細情報')+'</div>'+azPill(['はい','いいえ'],0,1)+azSec('共同作業の制限')+azRad(['任意のドメインに招待を送信することを許可する(最も包括的)','指定したドメインへの招待を拒否する','指定したドメインにのみ招待を許可する(最も制限が厳しい)'],0)+'</div>',
+'117_0':'<div class="az">'+azH('回答エリア / Answer Area').replace('azh','azh ans')+azCaLeft({bc:1,name:'CAPolicy1',assign:azBlade('ユーザー',azA('すべてのユーザー'))+azBlade('ターゲット リソース',azA('ターゲット リソースが選択されていません'))+azBlade('ネットワーク <span class="new">新規</span>',azA('未構成'))+azBlade('条件',azA('0 個の条件が選択されています')),ctl:azBlade('許可',azA('0 個のコントロールが選択されています'))+azBlade('セッション',azA('0 個のコントロールが選択されています'))})+'</div>',
+'c02020_0':'<div class="az"><div class="azcols">'+azCaLeft({name:'Policy1',assign:azBlade('ユーザーとグループ','特定のユーザーを含む',{hl:1,arrow:1,plain:1})+azBlade('クラウド アプリまたはアクション','すべてのクラウド アプリ',{arrow:1,plain:1})+azBlade('条件','0 個の条件が選択されています',{arrow:1,plain:1}),ctl:azBlade('許可','0 個のコントロールが選択されています',{arrow:1,plain:1})+azBlade('セッション','0 個のコントロールが選択されています',{arrow:1,plain:1})})+'<div class="azcol r"><p class="azp">すべてのユーザー、特定のユーザー グループ、ディレクトリ ロール、または外部ゲスト ユーザーへのユーザー アクセスの割り当てに基づいて、アクセスを制御します。 '+azA('詳細情報')+'</p><div class="azinex"><b>含める</b><span>除外</span></div>'+azRad(['なし','すべてのユーザー','ユーザーとグループを選択する'],2)+'<div class="azin2">'+azCk(0,'すべてのゲスト ユーザー (プレビュー)',{info:1})+azCk(0,'ディレクトリ ロール (プレビュー)',{info:1})+azCk(1,'ユーザーとグループ')+'</div><div class="azsel"><div>選択 '+azi+'<br>1 ユーザー</div><i class="ch">›</i></div><div class="azusr"><span class="av">US</span><span>User1<br>user1@sk200922outlook.onm…</span><span class="dots">…</span></div></div></div><div class="azfoot"><div class="azn">ポリシーの有効化</div>'+azPill(['レポート専用','オン','オフ'],1)+'<div style="margin-top:10px">'+azBtn('作成')+'</div></div></div>',
+'a090_0':'<div class="az"><div class="azcols g">'+azCaLeft({bc:1,title:'Policy1 <span class="dots">…</span>',sub:'条件付きアクセス ポリシー',desc:'条件付きアクセスに基づいてユーザー アクセスを制御し、シグナルをまとめて判断し、組織のポリシーを適用します。',name:'Policy1',assign:azBlade('ユーザーとグループ',azA('すべてのユーザー'))+azBlade('クラウド アプリまたはアクション',azA('すべてのクラウド アプリ'))+azBlade('条件',azA('0 個の条件が選択されています')),ctl:azBlade('許可',azA('1 個のコントロールが選択されています'),{hl:1})+azBlade('セッション',azA('0 個のコントロールが選択されています')),extra:'<div class="azn" style="margin-top:14px">ポリシーの有効化</div>'+azPill(['レポート専用','オン','オフ'],1)+'<div style="margin-top:8px">'+azBtn('保存',1)+'</div>'})+'<div class="azcol r grant"><div class="azT">許可 <span class="x">✕</span></div><p class="azp">アクセスを許可またはブロックするためのユーザー アクセスの適用を制御します。 '+azA('詳細情報')+'</p>'+azRad(['アクセスのブロック','アクセス権の付与'],1)+'<div class="gck">'+azCk(1,'多要素認証を要求する',{info:1})+azCk(0,'デバイスは準拠しているとしてマーク済みである必要がある',{info:1})+azCk(0,'ハイブリッド Azure AD 参加済みデバイスを要求する',{info:1})+azCk(0,'承認済みクライアント アプリを要求する',{info:1})+'<div class="sl">'+azA('承認済みクライアント アプリの一覧を表示')+'</div>'+azCk(0,'アプリ保護ポリシーを要求する',{info:1})+'<div class="sl">'+azA('ポリシーで保護されたクライアント アプリの一覧を表示')+'</div>'+azCk(0,'パスワードの変更を要求する',{info:1})+'</div><div class="azn" style="margin-top:14px">複数のコントロールの場合</div>'+azRad(['選択したすべてのコントロールを要求する','選択したコントロールのいずれかを要求する'],1)+'<div style="margin-top:16px">'+azBtn('選択')+'</div></div></div></div>',
+'a090_1':pimUA(['1 メンバー、0 グループ',1]),
+'a090_2':'<div class="az"><div class="azbc">… › <a>ContosoAzureAD</a> › <a>Identity Governance</a> › <a>Privileged Identity Management</a> › <a>ContosoAzureAD</a> ›</div><div class="azT big"><span class="uic">👤</span>User Administrator | 割り当て</div><div class="azS">Privileged Identity Management | Azure AD ロール</div>'+azTool(['＋ 割り当ての追加','⚙ 設定','⟳ 更新','⭳ エクスポート','♡ フィードバックを送信'])+azTabs(['対象の割り当て','アクティブな割り当て','期限切れの割り当て'],0)+'<div class="azsearch">🔍 メンバー名またはプリンシパル名で検索</div>'+azTbl(['名前','プリンシパル名','種類','スコープ','メンバーシップ'],[['<b>User Administrator</b>','','','',''],['Admin1','Admin1@m365x629615.onmicrosoft.com','ユーザー','ディレクトリ','直接'],['Admin2','Admin2@m365x629615.onmicrosoft.com','ユーザー','ディレクトリ','直接'],['Admin3','Admin3@m365x629615.onmicrosoft.com','ユーザー','ディレクトリ','直接']],{link:[0,1]})+'</div>',
+'a082_1':'<div class="az"><div class="azT">管理者の同意要求</div>'+azRow('ユーザーが同意できないアプリに管理者の同意を要求できる',azPill(['はい','いいえ'],0),1)+'<div class="azr"><div class="lb">管理者の同意要求を確認できるユーザー '+azi+'</div></div>'+azTbl(['レビュー担当者の種類','レビュー担当者'],[['ユーザー',azA('4 人のユーザーを選択済み。')],['グループ(プレビュー)',azA('＋ グループの追加')],['ロール(プレビュー)',azA('＋ ロールの追加')]])+azRow('選択したユーザーは要求のメール通知を受け取る',azPill(['はい','いいえ'],0),1)+azRow('選択したユーザーは要求の期限切れのリマインダーを受け取る',azPill(['はい','いいえ'],0),1)+azRow('同意要求の有効期限(日数)','<span class="azsl"><i></i></span> <span class="azin" style="min-width:40px;text-align:center">30</span>',1)+'</div>',
+'a001_1':'<div class="az"><div class="azdev"><div class="dn"><div>▤ すべてのデバイス</div><div class="on">⚙ デバイス設定</div><div>⚿ Enterprise State Roaming</div><div>🔑 BitLocker キー(プレビュー)</div><div>✕ 診断と問題解決</div><div class="dh">アクティビティ</div><div>▤ 監査ログ</div><div>▤ 一括操作の結果(プレビュー)</div><div class="dh">トラブルシューティング + サポート</div><div>👤 新しいサポート リクエスト</div></div><div class="dm"><div class="azT">デバイス | デバイス設定 <span class="dots">…</span></div><div class="azS">既定のディレクトリ - Azure Active Directory</div>'+azTool(['💾 保存','✕ 破棄','♡ フィードバックを送信'])+'<div class="lb2">ユーザーが Azure AD にデバイスを参加させることができる '+azi+'</div>'+azPill(['すべて','選択済み','なし'],0)+'<div class="lb2" style="margin-top:10px">選択済み</div><div class="azl" style="font-size:11px">メンバーが選択されていません</div><div class="lb2" style="margin-top:10px">ユーザーが Azure AD にデバイスを登録できる '+azi+'</div>'+azPill(['すべて','なし'],0)+'<div class="lb2" style="margin-top:10px">Azure AD 参加または Azure AD 登録のデバイスに多要素認証を必須とする '+azi+'</div>'+azPill(['はい','いいえ'],1)+'<div class="azwarn y"><i>⚠</i> 条件付きアクセスで多要素認証を必須にすることをお勧めします。条件付きアクセスで MFA を要求する場合は、この設定を「いいえ」にしてください。</div><div class="lb2" style="margin-top:10px">ユーザーあたりの最大デバイス数 '+azi+'</div>'+azIn('5',{pu:1,dd:1,blk:1})+'<div class="azh" style="margin-top:14px">Azure AD 参加デバイスの追加のローカル管理者</div><div>'+azA('Azure AD 参加デバイスの追加のローカル管理者を管理する')+'</div></div></div></div>',
+'125_0':'<div class="az">'+azTabs(['* 基本','リソース ロール','* 要求','要求者情報','* ライフサイクル','カスタム拡張機能','レビュー + 作成'],4)+azH('有効期限')+azRow('アクセス パッケージの割り当ての有効期限',azPill(['指定日','日数','時間数','なし'],1),1)+azRow('割り当ての有効期限(日数)',azIn('365',{w:140}),0,1)+azRow('ユーザーが特定のタイムラインを要求できる',azPill(['はい','いいえ'],0),1,1)+'<div class="azr"><div class="azc">'+azA('詳細な有効期限の設定を表示')+'</div></div>'+azH('アクセス レビュー')+azRow('アクセス レビューを必要とする',azPill(['はい','いいえ'],0,1),0,1)+azRow('開始日',azIn('25/01/2024',{w:140,cal:1}),1)+azRow('レビュー頻度',azPill(['毎年','半年ごと','四半期ごと','毎月','毎週'],1,1),1)+azRow('期間(日数)',azIn('90',{w:140,ok:1,pu:1})+'<div class="mx">最大 175</div>',1,1)+azRow('レビュー担当者',azRad(['自己レビュー','特定のレビュー担当者','マネージャー'],0),1)+'<div class="azr"><div class="azc">'+azA('詳細なアクセス レビューの設定を表示')+'</div></div></div>',
+'a046_0':'<div class="az">'+azH('有効期限')+azRow('アクセス パッケージの割り当ての有効期限',azPill(['指定日','日数','時間数(プレビュー)','なし'],1),1)+azRow('割り当ての有効期限(日数)',azIn('365',{w:140}))+'<div class="azr"><div class="azc">'+azA('詳細な有効期限の設定を表示')+'</div></div>'+azH('アクセス レビュー')+azRow('アクセス レビューを必要とする',azPill(['はい','いいえ'],0,1),0,1)+azRow('開始日',azIn('03/01/2022',{w:140,cal:1}),1)+azRow('レビュー頻度',azPill(['毎年','半年ごと','四半期ごと','毎月','毎週'],1,1),1)+azRow('期間(日数)',azIn('90',{w:140,ok:1})+'<div class="mx">最大 175</div>',1)+azRow('レビュー担当者',azRad(['自己レビュー','特定のレビュー担当者','マネージャー'],0),1)+'</div>'
+});
+JT['c02045_0']=JT['a090_0'];JT['c02045_1']=JT['a090_1'];JT['c02045_2']=JT['a090_2'];
+Object.assign(JT,{
+'c04004_0':pimUA(['なし',0]),
+'c04025_1':azPim('',[['アクティブ化の最大期間(時間)','1 時間'],['アクティブ化時に理由を要求','はい'],['アクティブ化時にチケット情報を要求','いいえ'],['アクティブ化時に Azure MFA を要求','はい'],['アクティブ化に承認を要求','いいえ'],['承認者','なし']],[['永続的な対象の割り当てを許可','はい'],['対象の割り当ての有効期限','-'],['永続的なアクティブな割り当てを許可','はい'],['アクティブな割り当ての有効期限','-'],['アクティブな割り当てに Azure MFA を要求','いいえ'],['アクティブな割り当てに理由を要求','はい']]),
+'c04034_0':azPim('ロール設定の詳細 - Application Administrator',[['アクティブ化の最大期間(時間)','5 時間'],['アクティブ化時に理由を要求','はい'],['アクティブ化時にチケット情報を要求','いいえ'],['アクティブ化に承認を要求','はい'],['承認者','0 メンバー、1 グループ',1]],[['永続的な対象の割り当てを許可','いいえ'],['対象の割り当ての有効期限','3 か月'],['永続的なアクティブな割り当てを許可','いいえ'],['アクティブな割り当ての有効期限','1 か月'],['アクティブな割り当てに Azure MFA を要求','いいえ'],['アクティブな割り当てに理由を要求','はい']]),
+'c04034_1':'<div class="az"><div class="azT big">割り当ての追加</div><div class="azS">Privileged Identity Management | Azure AD ロール</div>'+azTabs(['メンバーシップ','設定'],1)+'<div class="azn" style="margin-top:16px">割り当ての種類 '+azi+'</div>'+azRad(['対象 (Eligible)','アクティブ (Active)'],0)+'<p class="azp" style="margin:14px 0">許可される対象の最大期間は 3 か月です。</p><div class="azn">割り当ての開始 <span class="rq">*</span></div><div class="azdt">'+azIn('01/01/2021',{cal:1,blk:1})+azIn('12:00:00 AM',{blk:1})+'</div><div class="azn" style="margin-top:12px">割り当ての終了 <span class="rq">*</span></div><div class="azdt">'+azIn('01/31/2021',{cal:1,blk:1})+azIn('11:59:00 PM',{blk:1})+'</div></div>',
+'c04008_0':'<div class="az"><div class="azT">アクセス レビューの作成</div><p class="azp sm">アクセス レビューでは、ユーザーが引き続きそのロールを必要としているかをレビュー担当者が確認できます。</p>'+azRow('レビュー名',azIn('Admin review',{ok:1,pu:1,blk:1}),0,1)+azRow('説明',azIn('',{blk:1,w:300}).replace('azin','azin ta'),1)+azRow('開始日',azIn('12/18/2020',{cal:1,blk:1}),0,1)+azRow('頻度',azIn('毎月',{dd:1,pu:1,blk:1}))+azRow('期間(日数)','<span class="azsl w"><i></i></span> <span class="azin" style="min-width:36px;text-align:center">14</span>',1)+azRow('終了',azPill(['なし','終了日指定','回数指定'],0),1)+azRow('回数',azIn('0',{dis:1,blk:1}))+azRow('終了日',azIn('01/17/2021',{dis:1,cal:1,blk:1}))+'<div class="azr"><div class="lb">ユーザー<br>スコープ</div><div class="azc">'+azRad(['全員'],0)+'</div></div><div class="azr"><div class="azc">レビューするロール メンバーシップ(永続および対象) <span class="rq">*</span><br>'+azA('Application Administrator ほか 72 件')+'</div></div><div class="azr"><div class="lb">レビュー担当者<br>レビュー担当者</div><div class="azc">'+azIn('(プレビュー) マネージャー',{dd:1,pu:1,blk:1})+'</div></div><div class="azr"><div class="azc">(プレビュー) フォールバック レビュー担当者 '+azi+'<br>'+azA('Megan Bowen')+'</div></div><div class="azr"><div class="azc" style="border-top:1px solid #d2d0ce;padding-top:6px">⌄ 完了時の設定</div></div><div style="margin:8px 0">'+azBtn('開始')+'</div></div>',
+'c04035_0':'<div class="az"><div class="azr"><div class="lb big">レビュー担当者</div></div>'+azRow('レビュー担当者',azIn('メンバー (自分)',{dd:1,blk:1}))+'<div class="azrule"></div><div class="azgrp">⌃ 完了時の設定</div><div class="azbox">'+azRow('結果をリソースに自動適用する',azPill(['有効','無効'],0),1)+azRow('レビュー担当者が応答しない場合',azIn('変更なし',{dd:1,blk:1}),1)+azRow('拒否されたゲスト ユーザーに適用するアクション',azIn('ユーザーのメンバーシップをリソースから削除する',{dd:1,dis:1,blk:1}),1)+azRow('(プレビュー) レビュー終了時に通知する宛先',azA('＋ ユーザーまたはグループを選択'))+'</div><div class="azrule"></div><div class="azgrp">⌃ 詳細設定</div><div class="azbox">'+azRow('推奨事項を表示する',azPill(['有効','無効'],0),1)+azRow('承認時に理由を要求する',azPill(['有効','無効'],0),1)+azRow('メール通知',azPill(['有効','無効'],0),1)+azRow('リマインダー',azPill(['有効','無効'],0),1)+azRow('レビュー担当者へのメールの追加内容',azIn('',{blk:1,w:300}).replace('azin','azin ta'),1)+'</div></div>',
+'c01065_0':'<div class="az">'+azTabs(['概要','監視','プロパティ'],0)+'<div class="azh sm">基本情報</div><div class="azuser"><span class="avb">EU</span><div><div class="azT">External User</div><div class="azS">external195_gmail.com#EXT#@sk230415outlook.onmicrosoft.com<br>ゲスト</div></div></div><div class="azcols g2"><div class="azkv">'+[['ユーザー プリンシパル名','external195_gmail.com#EXT#@sk230415outlook.onmicroso… ⧉'],['オブジェクト ID','2b353249-fa3d-4c8e-b69d-fa6c6c60fa1c ⧉'],['作成日時','2023/4/30 11:58'],['ユーザーの種類','ゲスト'],['ID','<a class="azl">mail</a>']].map(r=>'<div>'+r[0]+'</div><div>'+r[1]+'</div>').join('')+'</div><div class="azkv2">'+[['グループ メンバーシップ','0'],['アプリケーション','0'],['割り当て済みロール','0'],['割り当て済みライセンス','0']].map(r=>'<div>'+r[0]+'</div><div class="lk">'+r[1]+'</div>').join('')+'</div></div><div class="azh sm">マイ フィード</div><div class="azfeed"><div><span class="ic">👤</span><b>アカウントの状態</b><br><span class="gn">●</span> 有効<div class="fl">'+azA('編集')+'</div></div><div><span class="ic">👤</span><b>サインイン</b><br>最後のサインイン: -- --<div class="fl">'+azA('すべてのサインインを表示')+'</div></div><div><span class="ic">👤</span><b>B2B コラボレーション</b><br>招待の状態: 承諾済み<div class="fl">'+azA('引き換えステータスのリセット')+'</div></div></div></div>',
+'c02022_0':'<div class="az">'+azH('カスタム スマート ロックアウト').replace('azh','azh nb')+azRow('<b>ロックアウトのしきい値</b>',azIn('5',{ok:1,blk:1}),1)+azRow('<b>ロックアウト期間(秒)</b>',azIn('3600',{ok:1,blk:1}),1)+azH('カスタム禁止パスワード').replace('azh','azh nb')+azRow('<b>カスタム リストを適用する</b>',azPill(['はい','いいえ'],0).replace('class="pill"','class="pill wide"'),1)+azRow('<b>カスタム禁止パスワード リスト</b>','<div class="azlist"><i class="ok">✓</i>Contoso<br>Litware<br>Tailwind<br>project<br>Zettabyte<br>MainStreet</div>',1)+azH('Windows Server Active Directory のパスワード保護').replace('azh','azh nb')+azRow('<b>Windows Server Active Directory でパスワード保護を有効にする</b>',azPill(['はい','いいえ'],0).replace('class="pill"','class="pill wide"'),1)+azRow('<b>モード</b>',azPill(['強制','監査'],0).replace('class="pill"','class="pill wide"'),1)+'</div>',
+'c03006_0':'<div class="az">'+azTool(['💾 保存','✕ 破棄','🗑 削除','|','♡ フィードバックを送信'])+azRow('ユーザーのサインインが有効',azPill(['はい','いいえ'],0),1)+azRow('名前',azIn('App1',{ok:1,blk:1}),1)+azRow('ホームページ URL',azIn('https://app1.m365x629615.onmicrosoft.com/',{dis:1,blk:1})+' <span class="azcpb">⧉</span>',1)+azRow('ロゴ','<span class="azlogo">AP</span><br>'+azIn('ファイルを選択',{dis:1,w:260}),1)+azRow('ユーザー アクセス URL',azIn('https://myapps.microsoft.com/signin/App1/09df58d6-d29d-40de-b0d…',{dis:1,blk:1})+' <span class="azcpb">⧉</span>',1)+azRow('アプリケーション ID',azIn('09df58d6-d29d-40de-b0d0-321fdc63c665',{dis:1,blk:1})+' <span class="azcpb">⧉</span>',1)+azRow('オブジェクト ID',azIn('03709d22-7e61-4007-a2a0-04dbdff269cd',{dis:1,blk:1})+' <span class="azcpb">⧉</span>',1)+azRow('サービス利用規約 URL',azIn('パブリッシャーはこの情報を提供していません',{dis:1,blk:1})+' <span class="azcpb">⧉</span>',1)+azRow('プライバシーに関する声明 URL',azIn('パブリッシャーはこの情報を提供していません',{dis:1,blk:1})+' <span class="azcpb">⧉</span>',1)+azRow('応答 URL',azIn('https://contoso.com/App1/logon',{dis:1,blk:1})+' <span class="azcpb">⧉</span>',1)+azRow('ユーザーの割り当てが必要?',azPill(['はい','いいえ'],1),1)+azRow('ユーザーに表示?',azPill(['はい','いいえ'],0),1)+'</div>'
+});
+const azAppNav=sel=>'<div class="dn sm">'+[['▤ 概要'],['▤ デプロイ プラン'],['✕ 診断と問題解決'],['<b>管理</b>',1],['▦ プロパティ'],['👤 所有者'],['👤 ロールと管理者 (プレビュー)'],['👤 ユーザーとグループ'],['↻ シングル サインオン'],['↻ プロビジョニング'],['▤ アプリケーション プロキシ'],['↻ セルフサービス'],['<b>セキュリティ</b>',1],['▤ 条件付きアクセス'],['👤 アクセス許可'],['🛡 トークンの暗号化'],['<b>アクティビティ</b>',1],['↻ サインイン ログ']].map(x=>'<div class="'+(x[0].indexOf(sel)>=0?'on':'')+(x[1]?' dh':'')+'">'+x[0]+'</div>').join('')+'</div>';
+Object.assign(JT,{
+'c03009_1':'<div class="az"><div class="azbc"><a>ダッシュボード</a> › <a>ContosoAzureAD</a> › <a>エンタープライズ アプリケーション</a> › <a>App1</a></div><div class="azT">App1 | プロパティ</div><div class="azS">エンタープライズ アプリケーション</div><div class="azdev">'+azAppNav('プロパティ')+'<div class="dm sm">'+azTool(['💾 保存','✕ 破棄','🗑 削除','|','♡ フィードバックを送信'])+azRow('ユーザーのサインインが有効?',azPill(['はい','いいえ'],0),1)+azRow('名前',azIn('App1',{dis:1,blk:1}),1)+azRow('ホームページ URL',azIn('https://app1.m365x629615.onmicrosoft.com/',{dis:1,blk:1,copy:1}),1)+azRow('ロゴ','<span class="azlogo">AP</span><br>'+azIn('ファイルを選択',{dis:1,w:200}),1)+azRow('ユーザー アクセス URL',azIn('https://myapps.microsoft.com/signin/App1/09df58d6-d29d-40de-b0d…',{dis:1,blk:1,copy:1}),1)+azRow('アプリケーション ID',azIn('09df58d6-d29d-40de-b0d0-321fdc63c665',{dis:1,blk:1,copy:1}),1)+azRow('オブジェクト ID',azIn('03709d22-7e61-4007-a2a0-04dbdff269cd',{dis:1,blk:1,copy:1}),1)+azRow('サービス利用規約 URL',azIn('パブリッシャーはこの情報を提供していません',{dis:1,blk:1,copy:1}),1)+azRow('プライバシーに関する声明 URL',azIn('パブリッシャーはこの情報を提供していません',{dis:1,blk:1,copy:1}),1)+azRow('応答 URL',azIn('https://contoso.com/App1/logon',{dis:1,blk:1,copy:1}),1)+azRow('ユーザーの割り当てが必要?',azPill(['はい','いいえ'],0),1)+azRow('ユーザーに表示?',azPill(['はい','いいえ'],1),1)+'</div></div></div>',
+'c03009_2':'<div class="az"><div class="azbc"><a>ダッシュボード</a> › <a>ContosoAzureAD</a> › <a>エンタープライズ アプリケーション</a> › <a>App1</a></div><div class="azT">App1 | セルフサービス</div><div class="azS">エンタープライズ アプリケーション</div><div class="azdev">'+azAppNav('セルフサービス')+'<div class="dm sm">'+azTool(['💾 保存','✕ 破棄'])+azRow('ユーザーがこのアプリケーションへのアクセスを要求することを許可する',azPill(['はい','いいえ'],0),1)+azRow('割り当てられたユーザーを追加するグループ',azIn('グループの選択<br>Group1',{blk:1}),1)+azRow('アクセスを付与する前に承認を要求する',azPill(['はい','いいえ'],0),1)+azRow('このアプリケーションへのアクセスを承認するユーザー',azIn('承認者の選択<br>1 ユーザーを選択',{blk:1}),1)+azRow('このアプリケーションにユーザーを割り当てるロール <span class="rq">*</span>',azIn('<i>既定のアクセス</i>',{blk:1}),1)+'</div><div class="azsa"><div class="azT">承認者の選択</div><div class="azsearch sm">検索</div>'+[['User1','User1@m365x629615.onmicrosoft.com','選択済み',1,'#c239b3'],['User2','User2@m365x629615.onmicrosoft.com','',0,'#d13438'],['User3','User3@m365x629615.onmicrosoft.com','',0,'#a4262c'],['User4','User4@m365x629615.onmicrosoft.com','',0,'#5c2e91']].map(u=>'<div class="u'+(u[3]?' sel':'')+'"><span class="av" style="background:'+u[4]+'">US</span><span>'+u[0]+'<br>'+u[1]+(u[2]?'<br>'+u[2]:'')+'</span></div>').join('')+'<div class="azT" style="margin-top:8px">選択した承認者</div><div class="u"><span class="av" style="background:#c239b3">US</span><span>User1<br>User1@m365x629615.onmicrosoft.com</span></div><div style="text-align:right"><span class="azbtn dis">削除</span></div></div></div></div>'
 });
 
 function buildSet(src,EN,prefix,excl){
@@ -1976,7 +2154,7 @@ function setBk(k,v){S.bk[k]=v;if(k!=='pos'){S.bk.pos=0;S.bk.page=1;}if(k==='f'){
 let _bt=null;
 function bookSearch(v){S.bk.q=v;S.bk.pos=0;S.bk.page=1;clearTimeout(_bt);_bt=setTimeout(()=>{render();const el=document.getElementById('bsearch');if(el){el.focus();el.setSelectionRange(v.length,v.length);}},300);}
 function bookGo(d){S.bk.pos+=d;S.sel=null;S.selPool=null;render();window.scrollTo(0,0);}
-function bookJump(i){S.bk.pos=i;S.sel=null;S.selPool=null;render();window.scrollTo(0,0);}
+function bookJump(i){S.bk.pos=i;S.sel=null;S.selPool=null;render();}
 function setLang(l){S.lang=l;render();}
 function gradeBook(qi){
  const q=Q[qi],a=S.ans[qi];
@@ -2168,7 +2346,7 @@ function renderBook(app){
   const pal=sub.map((x,i)=>`<button class="${i===p?'cur':''} ${bookStat(Q[x])==='ok'?'ans':''} ${bookStat(Q[x])==='ng'?'wrong':''} ${isMarked(Q[x])?'mk':''}" onclick="bookJump(${i})">${i+1}</button>`).join('');
   body=`<div class="bgrid"><div class="main"><div class="qhead"><span><b>問題 ${p+1} / ${n}</b></span><i>${setTag(q)}${q.series?' ・ シリーズ':''}</i></div><div class="qbody">${bookQ(qi)}</div>
   <div class="foot"><button class="btn" id="kPrev" ${p<=0?'disabled':''} onclick="bookGo(-1)">‹ 前へ</button>${g?`<button class="btn" id="kAct" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" id="kAct" onclick="gradeBook(${qi})">解答</button>`}<label class="mkl"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label><span class="sp"></span><button class="btn pri" id="kNext" ${p>=n-1?'disabled':''} onclick="bookGo(1)">次へ ›</button></div>${extraBook(qi,g)}</div>
-  <div class="side"><h4>問題一覧(${n})</h4><div class="pal">${pal}</div><p class="note" style="margin:10px 0 0;font-size:12px"><span style="color:var(--ok)">■</span> 正解 <span style="color:var(--ng)">■</span> 不正解 □ 未回答 <span style="color:#d83b01">⚑</span> 見直し</p></div></div>`;
+  <div class="side ${S.pal?'':'closed'}">${palHandles()}${palHead('問題一覧('+n+')')}<div class="palbody"><div class="pal">${pal}</div><p class="note" style="margin:10px 0 0;font-size:12px"><span style="color:var(--ok)">■</span> 正解 <span style="color:var(--ng)">■</span> 不正解 □ 未回答 <span style="color:#d83b01">⚑</span> 見直し</p></div></div></div>`;
  }else{
   const per=20,upto=Math.min(n,S.bk.page*per);
   body=`<div class="note" style="margin:4px 0 10px">該当 ${n} 問(${upto} 問まで表示)</div>`+sub.slice(0,upto).map((qi,i)=>{const q=Q[qi],g=!!S.bg[qi];
@@ -2338,7 +2516,7 @@ function renderQ(app){
  let nextLabel='次へ ›';
  if(S.mode==='exam'){ if(!inSeries&&S.pos===mainN-1)nextLabel='確認画面へ ›'; if(inSeries&&isLast)nextLabel='試験を終了 ›'; if(S.real&&q.caseId&&caseEnd(S.pos))nextLabel='ケース スタディを終了 ›'; }
  else if(isLast)nextLabel='終了して採点';
- const palette=S.mode==='practice'?`<div class="side"><h4>問題一覧</h4><div class="pal">${S.order.map((x,i)=>`<button class="${i===S.pos?'cur':''} ${isAns(Q[x],S.ans[x])?'ans':''} ${S.marks[x]?'mk':''}" onclick="go(${i})">${i+1}</button>`).join('')}</div><p class="note" style="margin:10px 0 6px;font-size:12px">緑=回答済み / ⚑=見直し</p><button class="btn pri sm" style="width:100%" onclick="confirmEnd()">終了して採点</button></div>`:'';
+ const palette=S.mode==='practice'?`<div class="side ${S.pal?'':'closed'}">${palHandles()}${palHead('問題一覧')}<div class="palbody"><div class="pal">${S.order.map((x,i)=>`<button class="${i===S.pos?'cur':''} ${isAns(Q[x],S.ans[x])?'ans':''} ${S.marks[x]?'mk':''}" onclick="goKeep(${i})">${i+1}</button>`).join('')}</div><p class="note" style="margin:10px 0 6px;font-size:12px">緑=回答済み / ⚑=見直し</p><button class="btn pri sm" style="width:100%" onclick="confirmEnd()">終了して採点</button></div></div>`:'';
  const secLabel=secLabelOf(q);
  app.innerHTML=`<div class="wrap"><div class="main"><div class="qhead"><span><b>問題 ${S.pos+1} / ${S.order.length}</b> ${lk?'🔒':''}</span><i>${secLabel}</i></div>
  <div class="qbody">${q.exhibits?`<p><button class="btn sm" onclick="openEx()">📎 展示 / Exhibit</button></p>`:''}${body}</div>
@@ -2415,6 +2593,7 @@ function dropSlot(e,qi,si){e.preventDefault();const [s,i]=e.dataTransfer.getData
 
 /* ---- ナビゲーション ---- */
 function go(i){S.pos=i;S.sel=null;S.selPool=null;render();window.scrollTo(0,0);}
+function goKeep(i){S.pos=i;S.sel=null;S.selPool=null;KEEPSCROLL=true;render();}
 function prev(){if(S.pos>0)go(S.pos-1);}
 function next(){
  const q=curQ(),qi=S.order[S.pos];
@@ -2510,6 +2689,59 @@ window.__dbg={get Q(){return Q;},
   else if(q.type==='order')a=correct?q.ans.slice():q.ans.slice().reverse();
   S.ans[i]=a;});return totals();},
  totals,S
+};
+
+/* ---- v8.2: 問題一覧の開閉(閉じているときは左の「問題」と同じ高さに合わせてスクロール) ---- */
+S.pal=false;try{S.pal=localStorage.getItem('sc300_ui_pal')==='1';}catch(e){}
+function palHead(title){return `<h4 class="palh"><span>${title}</span><button class="palt" onclick="togglePal()" title="問題一覧の開閉">${S.pal?'▲ 閉じる':'▼ 開く'}</button></h4>`;}
+function togglePal(){S.pal=!S.pal;try{localStorage.setItem('sc300_ui_pal',S.pal?'1':'0');}catch(e){}render();}
+let _palRO=null,KEEPSCROLL=false;
+S.palH=null;try{const w=localStorage.getItem('sc300_ui_palw'),h=localStorage.getItem('sc300_ui_palh');if(w)document.documentElement.style.setProperty('--palw',w);if(h&&+h>0)S.palH=+h;}catch(e){}
+function palHandles(){return `<div class="palrz" title="ドラッグで幅を変更(ダブルクリックで元に戻す)" onpointerdown="palDrag(event,'w')" ondblclick="palReset('w')"></div>`+(S.pal?'':`<div class="palrh" title="ドラッグで高さを変更(ダブルクリックで元に戻す)" onpointerdown="palDrag(event,'h')" ondblclick="palReset('h')"></div>`);}
+function palDrag(e,kind){
+ const s=document.querySelector('.side');if(!s)return;e.preventDefault();
+ const h=e.currentTarget;try{h.setPointerCapture(e.pointerId);}catch(x){}h.classList.add('on');
+ const x0=e.clientX,y0=e.clientY,w0=s.getBoundingClientRect().width,h0=s.getBoundingClientRect().height;
+ const mv=ev=>{
+  if(kind==='w'){const w=Math.max(160,Math.min(640,Math.round(w0+(x0-ev.clientX))));document.documentElement.style.setProperty('--palw',w+'px');}
+  else{const hh=Math.max(120,Math.min(4000,Math.round(h0+(ev.clientY-y0))));s.style.maxHeight=hh+'px';S.palH=hh;}
+ };
+ const up=()=>{h.classList.remove('on');h.removeEventListener('pointermove',mv);h.removeEventListener('pointerup',up);h.removeEventListener('pointercancel',up);
+  try{if(kind==='w')localStorage.setItem('sc300_ui_palw',document.documentElement.style.getPropertyValue('--palw'));else localStorage.setItem('sc300_ui_palh',String(S.palH));}catch(x){}};
+ h.addEventListener('pointermove',mv);h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up);
+}
+function palReset(kind){
+ if(kind==='w'){document.documentElement.style.removeProperty('--palw');try{localStorage.removeItem('sc300_ui_palw');}catch(e){}render();}
+ else{S.palH=null;try{localStorage.removeItem('sc300_ui_palh');}catch(e){}render();}
+}
+function syncPal(){
+ if(_palRO){_palRO.disconnect();_palRO=null;}
+ const s=document.querySelector('.side.closed'),m=document.querySelector('.bgrid .main, .wrap .main');
+ if(!s||!m)return;
+ const apply=()=>{
+  if(S.palH){s.style.maxHeight=S.palH+'px';return;}
+  const mr=m.getBoundingClientRect(),sr=s.getBoundingClientRect();const stacked=sr.top>=mr.bottom-4;
+  s.style.maxHeight=(stacked?Math.min(260,Math.round(innerHeight*0.4)):Math.max(Math.round(mr.height),160))+'px';
+ };
+ apply();
+ if(window.ResizeObserver){_palRO=new ResizeObserver(apply);_palRO.observe(m);}
+}
+function revealCur(nb,center){
+ const c=nb.querySelector('button.cur');if(!c)return;
+ const b=nb.getBoundingClientRect(),r=c.getBoundingClientRect();
+ if(center)nb.scrollTop+=(r.top-b.top)-(b.height/2)+r.height/2;
+ else if(r.top<b.top)nb.scrollTop-=(b.top-r.top)+6;
+ else if(r.bottom>b.bottom)nb.scrollTop+=(r.bottom-b.bottom)+6;
+}
+const _render0=render;
+render=function(){
+ const pb=document.querySelector('.palbody');const st=pb?pb.scrollTop:null;const y=window.scrollY;
+ const r=_render0.apply(this,arguments);
+ syncPal();
+ const nb=document.querySelector('.palbody');
+ if(nb){if(st!==null)nb.scrollTop=st;revealCur(nb,st===null);}
+ if(KEEPSCROLL){KEEPSCROLL=false;window.scrollTo(0,y);}
+ return r;
 };
 restoreBook();
 if(restoreProgress()){S.homeTab='exam';}else{S.screen='book';enterBook();}
