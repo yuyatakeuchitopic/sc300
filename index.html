@@ -358,7 +358,7 @@ details.rs{border-radius:10px;overflow:hidden}
 </style>
 </head>
 <body>
-<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8.9</span></span><span class="sp"></span><span id="topR"></span></div>
+<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8.10</span></span><span class="sp"></span><span id="topR"></span></div>
 <div id="app"></div>
 
 <script>
@@ -2274,7 +2274,7 @@ function nextUnrev(){const sub=bookSubset(),n=sub.length;if(!n)return;S.bk.view=
  for(let o=1;o<=n;o++){const i=(Math.min(S.bk.pos,n-1)+o)%n;if(!isRev(Q[sub[i]])){S.bk.pos=i;S.sel=null;S.selPool=null;render();window.scrollTo(0,0);return;}}
  alert('この絞り込みの問題は、すべて復習済みです。');}
 function revBar(sub){const n=sub.length;let c=0;sub.forEach(i=>{if(isRev(Q[i]))c++;});
- return `<div class="revbar"><span>復習済み <b>${c}</b> / ${n}</span><div class="revst"><i style="width:${n?(c/n*100).toFixed(1):0}%"></i></div><button class="btn sm" onclick="nextUnrev()" title="いまの位置より後ろで、まだ解答・復習していない問題へ移動します">未復習の次へ ›</button><button class="btn sm" onclick="resetRev()" title="復習済みの印をすべて外します">復習済みをリセット</button></div>`;}
+ return `<div class="revbar"><span>復習済み <b>${c}</b> / ${n}</span><div class="revst"><i style="width:${n?(c/n*100).toFixed(1):0}%"></i></div>${['ng','ok','mark','memo'].includes(S.bk.f)?`<button class="btn sm" onclick="nextUnrev()" title="いまの位置より後ろで、まだ解答・復習していない問題へ移動します">未復習の次へ ›</button><button class="btn sm" onclick="resetRev()" title="復習済みの印をすべて外します">復習済みをリセット</button>`:''}</div>`;}
 /* ---- v4: 意見が割れている問題 / メモ ---- */
 const NKEY='sc300_notes_v1';let NOTEC=null;const MEMOOPEN={},RECOPEN={};
 function getNotes(){if(NOTEC)return NOTEC;try{const j=localStorage.getItem(NKEY);NOTEC=j?JSON.parse(j):{};}catch(e){NOTEC={};}return NOTEC;}
