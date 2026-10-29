@@ -358,7 +358,7 @@ details.rs{border-radius:10px;overflow:hidden}
 </style>
 </head>
 <body>
-<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8.10</span></span><span class="sp"></span><span id="topR"></span></div>
+<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8.11</span></span><span class="sp"></span><span id="topR"></span></div>
 <div id="app"></div>
 
 <script>
@@ -2267,6 +2267,7 @@ const isMarked=q=>!!getMarks()[q.key];
 const RKEY='sc300_reviewed_v1';let REVC=null;
 function getRev(){if(REVC)return REVC;try{const j=localStorage.getItem(RKEY);REVC=j?JSON.parse(j):{};}catch(e){REVC={};}return REVC;}
 function saveRev(){try{localStorage.setItem(RKEY,JSON.stringify(getRev()));}catch(e){}}
+const revOn=()=>['ng','ok','mark','memo'].includes(S.bk.f);
 const isRev=q=>!!getRev()[q.key];
 function toggleRev(qi){const m=getRev(),k=Q[qi].key;if(m[k])delete m[k];else m[k]=Date.now();saveRev();render();}
 function resetRev(){const n=Object.keys(getRev()).length;if(!n){alert('復習済みの印はまだありません。');return;}if(!confirm('復習済みの印 '+n+' 問分をすべて外します(正解・不正解の記録は変わりません)。よろしいですか?'))return;REVC={};try{localStorage.removeItem(RKEY);}catch(e){}S.bk.shown=null;render();}
@@ -2274,7 +2275,7 @@ function nextUnrev(){const sub=bookSubset(),n=sub.length;if(!n)return;S.bk.view=
  for(let o=1;o<=n;o++){const i=(Math.min(S.bk.pos,n-1)+o)%n;if(!isRev(Q[sub[i]])){S.bk.pos=i;S.sel=null;S.selPool=null;render();window.scrollTo(0,0);return;}}
  alert('この絞り込みの問題は、すべて復習済みです。');}
 function revBar(sub){const n=sub.length;let c=0;sub.forEach(i=>{if(isRev(Q[i]))c++;});
- return `<div class="revbar"><span>復習済み <b>${c}</b> / ${n}</span><div class="revst"><i style="width:${n?(c/n*100).toFixed(1):0}%"></i></div>${['ng','ok','mark','memo'].includes(S.bk.f)?`<button class="btn sm" onclick="nextUnrev()" title="いまの位置より後ろで、まだ解答・復習していない問題へ移動します">未復習の次へ ›</button><button class="btn sm" onclick="resetRev()" title="復習済みの印をすべて外します">復習済みをリセット</button>`:''}</div>`;}
+ return `<div class="revbar"><span>復習済み <b>${c}</b> / ${n}</span><div class="revst"><i style="width:${n?(c/n*100).toFixed(1):0}%"></i></div>${revOn()?`<button class="btn sm" onclick="nextUnrev()" title="いまの位置より後ろで、まだ解答・復習していない問題へ移動します">未復習の次へ ›</button><button class="btn sm" onclick="resetRev()" title="復習済みの印をすべて外します">復習済みをリセット</button>`:''}</div>`;}
 /* ---- v4: 意見が割れている問題 / メモ ---- */
 const NKEY='sc300_notes_v1';let NOTEC=null;const MEMOOPEN={},RECOPEN={};
 function getNotes(){if(NOTEC)return NOTEC;try{const j=localStorage.getItem(NKEY);NOTEC=j?JSON.parse(j):{};}catch(e){NOTEC={};}return NOTEC;}
@@ -2312,7 +2313,7 @@ function setLang(l){S.lang=l;render();}
 function gradeBook(qi){
  const q=Q[qi],a=S.ans[qi];
  if(!isAns(q,a)){alert('先に回答を選択してください。');return;}
- {const rv=getRev();rv[q.key]=Date.now();saveRev();}
+ if(revOn()){const rv=getRev();rv[q.key]=Date.now();saveRev();}
  const [e,m]=score(q,a),ok=e===m;const b=getBook();const o=b[q.key]||{n:0,hist:[],okN:0,ngN:0};
  const sel=plain(userText(q,a));
  b[q.key]={r:ok?'ok':'ng',n:(o.n||0)+1,okN:(o.okN||0)+(ok?1:0),ngN:(o.ngN||0)+(ok?0:1),t:Date.now(),sel,e,m,hist:(o.hist||[]).concat([{t:Date.now(),ok,sel}]).slice(-50)};
@@ -2497,17 +2498,17 @@ function renderBook(app){
  if(!n){body=`<div class="empty">条件に合う問題がありません。${S.bk.q?'検索キーワードや':''}絞り込みを変更してください。</div>`;}
  else if(S.bk.view==='one'){
   S.bk.pos=Math.min(Math.max(S.bk.pos,0),n-1);const p=S.bk.pos,qi=sub[p],q=Q[qi],g=!!S.bg[qi];
-  const pal=sub.map((x,i)=>`<button class="${i===p?'cur':''} ${bookStat(Q[x])==='ok'?'ans':''} ${bookStat(Q[x])==='ng'?'wrong':''} ${isMarked(Q[x])?'mk':''} ${isRev(Q[x])?'rvd':''}" onclick="bookJump(${i})">${i+1}</button>`).join('');
+  const pal=sub.map((x,i)=>`<button class="${i===p?'cur':''} ${bookStat(Q[x])==='ok'?'ans':''} ${bookStat(Q[x])==='ng'?'wrong':''} ${isMarked(Q[x])?'mk':''} ${revOn()&&isRev(Q[x])?'rvd':''}" onclick="bookJump(${i})">${i+1}</button>`).join('');
   body=`<div class="bgrid"><div class="main"><div class="qhead"><span><b>問題 ${p+1} / ${n}</b></span><i>${setTag(q)}${q.series?' ・ シリーズ':''}</i></div><div class="qbody">${bookQ(qi)}</div>
-  <div class="foot"><button class="btn" id="kPrev" ${p<=0?'disabled':''} onclick="bookGo(-1)">‹ 前へ</button>${g?`<button class="btn" id="kAct" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" id="kAct" onclick="gradeBook(${qi})">解答</button>`}<label class="mkl"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label><label class="mkl" title="解答して解説を表示すると自動でチェックされます。外すと未復習に戻ります"><input type="checkbox" ${isRev(q)?'checked':''} onchange="toggleRev(${qi})"> 復習済み</label><span class="sp"></span><button class="btn pri" id="kNext" ${p>=n-1?'disabled':''} onclick="bookGo(1)">次へ ›</button></div>${extraBook(qi,g)}</div>
-  <div class="side ${S.pal?'':'closed'}">${palHandles()}${palHead('問題一覧('+n+')')}<div class="palbody"><div class="pal">${pal}</div><p class="note" style="margin:10px 0 0;font-size:12px"><span style="color:var(--ok)">■</span> 正解 <span style="color:var(--ng)">■</span> 不正解 □ 未回答 <span style="color:#d83b01">⚑</span> 見直し <span style="color:#2e7d32">✓</span> 復習済み(薄く表示)</p></div></div></div>`;
+  <div class="foot"><button class="btn" id="kPrev" ${p<=0?'disabled':''} onclick="bookGo(-1)">‹ 前へ</button>${g?`<button class="btn" id="kAct" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" id="kAct" onclick="gradeBook(${qi})">解答</button>`}<label class="mkl"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label>${revOn()?`<label class="mkl" title="解答して解説を表示すると自動でチェックされます。外すと未復習に戻ります"><input type="checkbox" ${isRev(q)?'checked':''} onchange="toggleRev(${qi})"> 復習済み</label>`:''}<span class="sp"></span><button class="btn pri" id="kNext" ${p>=n-1?'disabled':''} onclick="bookGo(1)">次へ ›</button></div>${extraBook(qi,g)}</div>
+  <div class="side ${S.pal?'':'closed'}">${palHandles()}${palHead('問題一覧('+n+')')}<div class="palbody"><div class="pal">${pal}</div><p class="note" style="margin:10px 0 0;font-size:12px"><span style="color:var(--ok)">■</span> 正解 <span style="color:var(--ng)">■</span> 不正解 □ 未回答 <span style="color:#d83b01">⚑</span> 見直し${revOn()?' <span style="color:#2e7d32">✓</span> 復習済み(薄く表示)':''}</p></div></div></div>`;
  }else{
   const per=20,upto=Math.min(n,S.bk.page*per);
   body=`<div class="note" style="margin:4px 0 10px">該当 ${n} 問(${upto} 問まで表示)</div>`+sub.slice(0,upto).map((qi,i)=>{const q=Q[qi],g=!!S.bg[qi];
-   return `<div class="bcard"><div class="bch"><b>#${i+1}</b> <span class="tag">${setTag(q)}</span>${q.series?'<span class="tag badge-ser">シリーズ</span>':''} ${splitBadge(q)} <label class="mkl" style="float:right"><input type="checkbox" ${isRev(q)?'checked':''} onchange="toggleRev(${qi})"> 復習済み</label><label class="mkl" style="float:right"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label></div><div class="bcb">${bookQ(qi)}</div><div class="bcf">${g?`<button class="btn" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" onclick="gradeBook(${qi})">解答</button>`}</div>${extraBook(qi,g)}</div>`;}).join('')+(upto<n?`<div style="text-align:center;margin:14px"><button class="btn" onclick="S.bk.page++;render()">さらに ${Math.min(per,n-upto)} 問を表示(残り ${n-upto} 問)</button></div>`:'');
+   return `<div class="bcard"><div class="bch"><b>#${i+1}</b> <span class="tag">${setTag(q)}</span>${q.series?'<span class="tag badge-ser">シリーズ</span>':''} ${splitBadge(q)} ${revOn()?`<label class="mkl" style="float:right"><input type="checkbox" ${isRev(q)?'checked':''} onchange="toggleRev(${qi})"> 復習済み</label>`:''}<label class="mkl" style="float:right"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label></div><div class="bcb">${bookQ(qi)}</div><div class="bcf">${g?`<button class="btn" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" onclick="gradeBook(${qi})">解答</button>`}</div>${extraBook(qi,g)}</div>`;}).join('')+(upto<n?`<div style="text-align:center;margin:14px"><button class="btn" onclick="S.bk.page++;render()">さらに ${Math.min(per,n-upto)} 問を表示(残り ${n-upto} 問)</button></div>`:'');
  }
  app.innerHTML=homeShell('book',`<div class="stack"><i class="s-ok" style="width:${pct(sm.ok)}%"></i><i class="s-ng" style="width:${pct(sm.ng)}%"></i><i class="s-new" style="width:${pct(sm.nw)}%"></i></div>
- <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>正解 <b>${sm.ok}</b></span><span><i class="dot" style="background:var(--ng)"></i>不正解 <b>${sm.ng}</b></span><span><i class="dot" style="background:#c3cad2"></i>未回答 <b>${sm.nw}</b></span><span style="color:var(--sub)">全 ${sm.n} 問</span></div>${(S.bk.f==='ng'||S.bk.f==='ok')?ngChips():''}${domChip()}${tool}${n?revBar(sub):''}${body}`);
+ <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>正解 <b>${sm.ok}</b></span><span><i class="dot" style="background:var(--ng)"></i>不正解 <b>${sm.ng}</b></span><span><i class="dot" style="background:#c3cad2"></i>未回答 <b>${sm.nw}</b></span><span style="color:var(--sub)">全 ${sm.n} 問</span></div>${(S.bk.f==='ng'||S.bk.f==='ok')?ngChips():''}${domChip()}${tool}${n&&revOn()?revBar(sub):''}${body}`);
  renderModal();
 }
 const stBadgeW=t=>t==='ok'?'<span class="bdg okw">正解済み</span>':t==='ng'?'<span class="bdg ngw">不正解あり</span>':'';
