@@ -355,10 +355,12 @@ details.rs{border-radius:10px;overflow:hidden}
 .revbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0;font-size:13px;color:#33475b}
 .revst{flex:1;min-width:80px;max-width:260px;height:8px;border-radius:6px;background:#e1e6ec;overflow:hidden}
 .revst i{display:block;height:100%;background:#2e7d32}
+.badge-ng3{background:#fde7e9;color:#a4262c;border:1px solid #f1bbbc;font-weight:700;border-radius:6px;padding:0 8px;margin-right:4px}.ngchips .dr{display:inline-flex;align-items:center;gap:6px;margin-left:6px}.ngchips input[type=date]{padding:5px 8px;border:1px solid #c9d3de;border-radius:8px;font:inherit}
+.notag{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.18);color:inherit;font:inherit;font-weight:700;border-radius:6px;padding:0 9px;cursor:pointer}.notag:hover{background:rgba(255,255,255,.35)}.bcard .notag{border-color:#9db6d1;background:#eef4fb;color:#1c4a7a}.bcard .notag:hover{background:#dbe9f7}
 </style>
 </head>
 <body>
-<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8.11</span></span><span class="sp"></span><span id="topR"></span></div>
+<div id="top"><span class="ttl">SC-300 模擬問題 ― Microsoft Identity and Access Administrator <span class="ver">v8.13</span></span><span class="sp"></span><span id="topR"></span></div>
 <div id="app"></div>
 
 <script>
@@ -2027,7 +2029,7 @@ document.addEventListener('click',ev=>{
 });
 
 /* ============================== 状態 ============================== */
-const S={screen:'book',homeTab:'book',histTab:'book',bans:{},bg:{},bk:{view:'one',f:'all',pos:0,q:'',page:1},selQ:-1,set:'rand',count:20,filter:'all',shuffle:true,mode:'exam',lang:'ja',mins:50,order:[],pos:0,ans:{},marks:{},locked:{},reveal:{},sel:null,selPool:null,modal:null,exTab:0,left:0,timer:null,result:null};
+const S={screen:'book',homeTab:'book',histTab:'book',bans:{},bg:{},bk:{view:'one',f:'all',pos:0,q:'',page:1,per:'all',from:'',to:'',nowng:false},selQ:-1,set:'rand',count:20,filter:'all',shuffle:true,mode:'exam',lang:'ja',mins:50,order:[],pos:0,ans:{},marks:{},locked:{},reveal:{},sel:null,selPool:null,modal:null,exTab:0,left:0,timer:null,result:null};
 const MAIN=()=>S.order.filter(i=>!Q[i].series);
 const SER=()=>S.order.filter(i=>Q[i].series);
 const $=s=>document.querySelector(s);
@@ -2134,7 +2136,7 @@ function kbdClick(id){const b=document.getElementById(id);if(b&&!b.disabled){b.c
 function toggleKbHelp(){
  const o=document.getElementById('kh');if(o){o.remove();return;}
  const d=document.createElement('div');d.id='kh';d.className='modal';
- d.innerHTML=`<div class="box" style="max-width:520px"><div class="mh"><b>キーボード操作</b><button class="btn sm" onclick="document.getElementById('kh').remove()">閉じる (Esc)</button></div><div class="mb"><table class="kt"><tr><td><kbd>1</kbd>〜<kbd>9</kbd></td><td>選択肢を選ぶ(複数選択は切り替え)</td></tr><tr><td><kbd>Enter</kbd></td><td>解答 / 解答を表示 → 次の問題へ</td></tr><tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>前の問題 / 次の問題</td></tr><tr><td><kbd>M</kbd></td><td>見直しマークの切り替え</td></tr><tr><td><kbd>R</kbd></td><td>もう一度解く(問題集)</td></tr><tr><td><kbd>E</kbd></td><td>展示(Exhibit)を開く</td></tr><tr><td><kbd>S</kbd></td><td>解答を表示/隠す(演習モード)</td></tr><tr><td><kbd>?</kbd></td><td>このヘルプの表示/非表示</td></tr></table><p class="note">メモ欄や検索窓に入力しているときは無効です。「問題集」は 1 問ずつ表示のときのみ使えます。</p></div></div>`;
+ d.innerHTML=`<div class="box" style="max-width:520px"><div class="mh"><b>キーボード操作</b><button class="btn sm" onclick="document.getElementById('kh').remove()">閉じる (Esc)</button></div><div class="mb"><table class="kt"><tr><td><kbd>1</kbd>〜<kbd>9</kbd></td><td>選択肢を選ぶ(複数選択は切り替え)</td></tr><tr><td><kbd>Enter</kbd></td><td>解答 / 解答を表示 → 次の問題へ</td></tr><tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>前の問題 / 次の問題</td></tr><tr><td><kbd>M</kbd></td><td>見直しマークの切り替え</td></tr><tr><td><kbd>R</kbd></td><td>もう一度解く(問題集)</td></tr><tr><td><kbd>E</kbd></td><td>展示(Exhibit)を開く</td></tr><tr><td><kbd>S</kbd></td><td>解答を表示/隠す(演習モード)</td></tr><tr><td>問題 <b>No.</b>(クリック)</td><td>その問題の記録(正解・不正解の回数と解答履歴)を表示(問題集の見出し・一覧)</td></tr><tr><td><kbd>?</kbd></td><td>このヘルプの表示/非表示</td></tr></table><p class="note">メモ欄や検索窓に入力しているときは無効です。「問題集」は 1 問ずつ表示のときのみ使えます。</p></div></div>`;
  document.body.appendChild(d);
 }
 document.addEventListener('keydown',e=>{
@@ -2142,7 +2144,7 @@ document.addEventListener('keydown',e=>{
  const t=e.target,tag=t&&t.tagName;
  if((tag==='INPUT'&&t.type!=='radio'&&t.type!=='checkbox')||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
  const kh=document.getElementById('kh');
- if(e.key==='Escape'){if(kh){kh.remove();return;}if(S.modal!=null){S.modal=null;render();}return;}
+ if(e.key==='Escape'){const rb=document.getElementById('recbox');if(rb){rb.remove();return;}if(kh){kh.remove();return;}if(S.modal!=null){S.modal=null;render();}return;}
  if(e.key==='?'){toggleKbHelp();e.preventDefault();return;}
  if(kh||S.modal!=null)return;
  let qi=null,locked=false;
@@ -2256,7 +2258,7 @@ const BKEY='sc300_qbook_v1',BUIKEY='sc300_bookui_v1';
 let BOOKC=null;
 function getBook(){if(BOOKC)return BOOKC;try{const j=localStorage.getItem(BKEY);BOOKC=j?JSON.parse(j):{};}catch(e){BOOKC={};}
  Object.keys(BOOKC).forEach(k=>{const e=BOOKC[k];if(e&&e.okN===undefined){const h=e.hist||[];e.okN=h.filter(x=>x.ok).length;e.ngN=Math.max((e.n||h.length)-e.okN,0);}});return BOOKC;}
-function saveBook(){try{localStorage.setItem(BKEY,JSON.stringify(BOOKC));}catch(e){}}
+function saveBook(){BOOKV++;try{localStorage.setItem(BKEY,JSON.stringify(BOOKC));}catch(e){}}
 const bookStat=q=>{const e=getBook()[q.key];return e?e.r:'new';};
 const MKEY='sc300_bookmarks_v1';let MARKC=null;
 function getMarks(){if(MARKC)return MARKC;try{const j=localStorage.getItem(MKEY);MARKC=j?JSON.parse(j):{};}catch(e){MARKC={};}return MARKC;}
@@ -2291,20 +2293,44 @@ function voteNote(q){const e=Object.entries(q.votes||{}).sort((a,b)=>b[1]-a[1]);
 function extraBook(qi,g){const q=Q[qi];return (g?voteNote(q):'')+`<div class="memoline">${recBtn(qi)}${memoBtn(qi)}${simBtn(qi)}</div>`+(RECOPEN[q.key]?recLine(q):'')+simBox(qi)+(MEMOOPEN[q.key]?`<div class="memobox"><textarea id="memo${qi}" class="memo" oninput="saveMemo(${qi},this.value)" placeholder="この問題のメモ(自動で保存されます)">${esc(getNotes()[q.key]||'')}</textarea></div>`:'');}
 
 const passBook=(q,f)=>{if(f==='mark')return isMarked(q);if(f==='split')return !!q.split;if(f==='memo')return hasMemo(q);const t=bookStat(q);return f==='all'||(f==='new'&&t==='new')||(f==='ng'&&t==='ng')||(f==='unok'&&t!=='ok')||(f==='ok'&&t==='ok');};
-const bookCount=f=>ALLARR.filter(q=>passBook(q,f)).length;
+const bookCount=f=>f==='ng'?ngPop().length:ALLARR.filter(q=>passBook(q,f)).length;
 function searchText(q){if(q._s)return q._s;const jaS=Array.isArray(q.stem)?q.stem[0]:q.stem,enS=Array.isArray(q.stem)?q.stem[1]:q.stem;q._s=(String(q.id)+' '+'no.'+q.no+' no'+q.no+' #'+q.no+' '+plain(jaS)+' '+plain(enS)+' '+(q.opts||[]).map(o=>o.ja+' '+o.en).join(' ')).toLowerCase();return q._s;}
-function ngBase(){const b=getBook(),c=S.bk.ngc||'all',a=[],R=S.bk.f==='ok'?'ok':'ng';ALLARR.forEach((q,i)=>{const e=b[q.key];if(!e||e.r!==R)return;const n=(R==='ok'?e.okN:e.ngN)||1;if(c==='1'&&n!==1)return;if(c==='2'&&n!==2)return;if(c==='3'&&n<3)return;a.push(i);});if(c==='last')a.sort((x,y)=>(b[ALLARR[y].key].t||0)-(b[ALLARR[x].key].t||0));return a;}
+/* ---- v8.12: 不正解の回数を「記録からの累計」で数える(期間指定つき) ---- */
+let BOOKV=0,_ngEvKey=null,_ngEv=null;
+function ngEvents(){const k=BOOKV+'|'+(BOOKC?Object.keys(BOOKC).length:0);if(_ngEv&&_ngEvKey===k)return _ngEv;const ev={},b=getBook();
+ Object.keys(b).forEach(key=>{(b[key].hist||[]).forEach(h=>{if(h&&!h.ok)(ev[key]=ev[key]||[]).push(h.t||0);});});_ngEv=ev;_ngEvKey=k;return ev;}
+function perRange(){const p=S.bk.per||'all',now=Date.now();
+ if(p==='w1')return[now-7*864e5,now];
+ if(p==='m1'){const d=new Date(now);d.setMonth(d.getMonth()-1);return[d.getTime(),now];}
+ if(p==='range'){const f=S.bk.from?new Date(S.bk.from+'T00:00:00').getTime():0,t=S.bk.to?new Date(S.bk.to+'T23:59:59.999').getTime():now;return[isNaN(f)?0:f,isNaN(t)?now:t];}
+ return null;}
+function ngCountQ(q,ev,rg){const e=getBook()[q.key];if(!e)return 0;const l=ev[q.key]||[];if(!rg)return Math.max(e.ngN||0,l.length);return l.filter(t=>t>=rg[0]&&t<=rg[1]).length;}
+function ngPop(){const ev=ngEvents(),rg=perRange(),b=getBook(),out=[];ALLARR.forEach((q,i)=>{const n=ngCountQ(q,ev,rg);if(n<1)return;if(S.bk.nowng&&!(b[q.key]&&b[q.key].r==='ng'))return;out.push({i,q,n,last:(ev[q.key]&&ev[q.key].length)?Math.max.apply(null,ev[q.key]):(b[q.key].t||0)});});return out;}
+function ngBase(){const b=getBook(),c=S.bk.ngc||'all',a=[];
+ if(S.bk.f==='ng'){let L=ngPop().filter(x=>!(c==='1'&&x.n!==1)&&!(c==='2'&&x.n!==2)&&!(c==='3'&&x.n<3));if(c==='last')L.sort((x,y)=>y.last-x.last);return L.map(x=>x.i);}
+ ALLARR.forEach((q,i)=>{const e=b[q.key];if(!e||e.r!=='ok')return;const n=e.okN||1;if(c==='1'&&n!==1)return;if(c==='2'&&n!==2)return;if(c==='3'&&n<3)return;a.push(i);});
+ if(c==='last')a.sort((x,y)=>(b[ALLARR[y].key].t||0)-(b[ALLARR[x].key].t||0));return a;}
+const PERS=[['all','全期間'],['w1','直近 1 週間'],['m1','直近 1 か月'],['range','期間選択']];
+function ngBadge(q){if(S.bk.f!=='ng')return'';const n=ngCountQ(q,ngEvents(),perRange());const per=(S.bk.per||'all')==='all'?'累計':'期間内';return n>=3?`<span class="tag badge-ng3" title="この問題を不正解にした回数(${per})">不正解 ${n} 回(${per})</span>`:'';}
 function freezeBook(reset){let a=null;if(S.bk.f==='ng'||S.bk.f==='ok')a=ngBase();else if(S.bk.f==='mark')a=ALLARR.map((q,i)=>i).filter(i=>isMarked(ALLARR[i]));S.bk.frozen=a;if(a&&reset)a.forEach(i=>{delete S.ans[i];delete S.bg[i];});}
 function bookSubset(){const qq=(S.bk.q||'').trim().toLowerCase();const fz=(S.bk.f==='ng'||S.bk.f==='ok'||S.bk.f==='mark')&&S.bk.frozen;const src=fz?S.bk.frozen:ALLARR.map((q,i)=>i);const out=[];src.forEach(i=>{const q=ALLARR[i];if(S.bk.dom&&q.tp!==S.bk.dom)return;if(!fz&&!passBook(q,S.bk.f))return;if(qq&&!qq.split(/\s+/).every(w=>searchText(q).includes(w)))return;out.push(i);});return out;}
-function ngChips(){const b=getBook(),R=S.bk.f==='ok'?'ok':'ng';let c1=0,c2=0,c3=0,ca=0;ALLARR.forEach(q=>{const e=b[q.key];if(e&&e.r===R){ca++;const n=(R==='ok'?e.okN:e.ngN)||1;if(n===1)c1++;else if(n===2)c2++;else c3++;}});const cur=S.bk.ngc||'all';const mk=(k,l,n)=>`<button class="chip ${cur===k?'on':''}" onclick="setBk('ngc','${k}')">${l}<i>${n}</i></button>`;return `<div class="ngchips"><span>${R==='ok'?'正解':'不正解'}の回数</span>${mk('all','すべて',ca)}${mk('1','1回',c1)}${mk('2','2回',c2)}${mk('3','3回以上',c3)}${mk('last',R==='ok'?'最近正解した順':'最近間違えた順',ca)}</div>`;}
+function ngChips(){const R=S.bk.f==='ok'?'ok':'ng';const cur=S.bk.ngc||'all';let c1=0,c2=0,c3=0,ca=0;
+ if(R==='ng'){ngPop().forEach(x=>{ca++;if(x.n===1)c1++;else if(x.n===2)c2++;else c3++;});}
+ else{const b=getBook();ALLARR.forEach(q=>{const e=b[q.key];if(e&&e.r==='ok'){ca++;const n=e.okN||1;if(n===1)c1++;else if(n===2)c2++;else c3++;}});}
+ const mk=(k,l,n)=>`<button class="chip ${cur===k?'on':''}" onclick="setBk('ngc','${k}')">${l}<i>${n}</i></button>`;
+ let per='';
+ if(R==='ng'){const p=S.bk.per||'all';
+  per=`<div class="ngchips"><span>期間</span>${PERS.map(([k,l])=>`<button class="chip ${p===k?'on':''}" onclick="setBk('per','${k}')">${l}</button>`).join('')}${p==='range'?`<span class="dr"><input type="date" value="${esc(S.bk.from||'')}" onchange="setBk('from',this.value)"> 〜 <input type="date" value="${esc(S.bk.to||'')}" onchange="setBk('to',this.value)"></span>`:''}<label class="mkl" title="オンにすると、最後の解答が不正解のままの問題だけに絞ります(のちに正解した問題は除く)"><input type="checkbox" ${S.bk.nowng?'checked':''} onchange="setBk('nowng',this.checked)"> 現在も不正解のものだけ</label></div>
+  <div class="note" style="margin:-2px 0 8px 2px">不正解の回数は、問題集の記録からの累計で数えます(のちに正解した問題も含む)。期間を選ぶと、その期間内に間違えた回数で数えます。</div>`;}
+ return per+`<div class="ngchips"><span>${R==='ok'?'正解':'不正解'}の回数</span>${mk('all','すべて',ca)}${mk('1','1回',c1)}${mk('2','2回',c2)}${mk('3','3回以上',c3)}${mk('last',R==='ok'?'最近正解した順':'最近間違えた順',ca)}</div>`;}
 function enterBook(){Q=ALLARR;S.ans=S.bans;S.sel=null;S.selPool=null;S.modal=null;}
 function setTab(t){S.homeTab=t;if(t==='book'){S.screen='book';enterBook();}else S.screen='start';render();window.scrollTo(0,0);}
 function goHome(){setTab(S.homeTab);}
 function goExam(){setTab('exam');}
 function openHistory(){S.histTab=S.homeTab;S.screen='history';render();window.scrollTo(0,0);}
-function persistBook(){try{localStorage.setItem(BUIKEY,JSON.stringify({view:S.bk.view,f:S.bk.f,ngc:S.bk.ngc,pos:S.bk.pos,q:S.bk.q,lang:S.lang,ans:S.bans}));}catch(e){}}
-function restoreBook(){try{const j=localStorage.getItem(BUIKEY);if(!j)return;const p=JSON.parse(j);Object.assign(S.bk,{view:p.view||'one',f:p.f||'all',ngc:p.ngc||'all',pos:p.pos||0,q:p.q||''});S.bans=p.ans||{};if(p.lang)S.lang=p.lang;}catch(e){}}
-function setBk(k,v){S.bk[k]=v;if(k!=='pos'){S.bk.pos=0;S.bk.page=1;}if(k==='f'){S.bk.ngc='all';S.bk.frozen=null;}if(k==='f'||k==='ngc'){if(S.bk.f==='ng'||S.bk.f==='ok'||S.bk.f==='mark')freezeBook(true);else S.bk.frozen=null;}render();window.scrollTo(0,0);}
+function persistBook(){try{localStorage.setItem(BUIKEY,JSON.stringify({view:S.bk.view,f:S.bk.f,ngc:S.bk.ngc,per:S.bk.per,from:S.bk.from,to:S.bk.to,nowng:S.bk.nowng,pos:S.bk.pos,q:S.bk.q,lang:S.lang,ans:S.bans}));}catch(e){}}
+function restoreBook(){try{const j=localStorage.getItem(BUIKEY);if(!j)return;const p=JSON.parse(j);Object.assign(S.bk,{view:p.view||'one',f:p.f||'all',ngc:p.ngc||'all',per:['all','w1','m1','range'].includes(p.per)?p.per:'all',from:/^\d{4}-\d{2}-\d{2}$/.test(p.from||'')?p.from:'',to:/^\d{4}-\d{2}-\d{2}$/.test(p.to||'')?p.to:'',nowng:!!p.nowng,pos:p.pos||0,q:p.q||''});S.bans=p.ans||{};if(p.lang)S.lang=p.lang;}catch(e){}}
+function setBk(k,v){S.bk[k]=v;if(k!=='pos'){S.bk.pos=0;S.bk.page=1;}if(k==='f'){S.bk.ngc='all';S.bk.frozen=null;}if(k==='f'||k==='ngc'||k==='per'||k==='from'||k==='to'||k==='nowng'){if(S.bk.f==='ng'||S.bk.f==='ok'||S.bk.f==='mark')freezeBook(true);else S.bk.frozen=null;}render();window.scrollTo(0,0);}
 let _bt=null;
 function bookSearch(v){S.bk.q=v;S.bk.pos=0;S.bk.page=1;clearTimeout(_bt);_bt=setTimeout(()=>{render();const el=document.getElementById('bsearch');if(el){el.focus();el.setSelectionRange(v.length,v.length);}},300);}
 function bookGo(d){S.bk.pos+=d;S.sel=null;S.selPool=null;render();window.scrollTo(0,0);}
@@ -2335,6 +2361,25 @@ function bookQ(qi){
 }
 const stBadge=t=>t==='ok'?'<span class="bdg ok">● 正解</span>':t==='ng'?'<span class="bdg ng">● 不正解</span>':'<span class="bdg nw">○ 未回答</span>';
 const setTag=q=>'No.'+q.no;
+/* ---- v8.13: 問題 No をクリックすると、その問題の記録を表示 ---- */
+function noBtn(q){return `<button class="notag" onclick="showRec('${q.key}')" title="クリックでこの問題の記録(正解・不正解の回数と解答履歴)を表示">No.${q.no}</button>`;}
+function showRec(key){
+ const q=ALLARR.find(x=>x.key===key);if(!q)return;
+ const o=document.getElementById('recbox');if(o)o.remove();
+ const e=getBook()[key],st=loadStat()[key];
+ const stem=plain(Array.isArray(q.stem)?q.stem[0]:q.stem).slice(0,120);
+ const hist=e&&e.hist?e.hist.slice().reverse():[];
+ let body=`<p style="margin:0 0 10px">${esc(stem)}…</p>`;
+ if(e){body+=`<p style="margin:0 0 8px">最後の結果: ${e.r==='ok'?'<b class="mark-ok">正解</b>':'<b class="mark-ng">不正解</b>'}(${fdate(e.t)}) &nbsp; 問題集の通算: 正解 <b>${e.okN||0}</b> 回 / 不正解 <b>${e.ngN||0}</b> 回</p>`;}
+ else body+=`<p style="margin:0 0 8px;color:#64707d">問題集での解答の記録はまだありません。</p>`;
+ if(st&&((st.okN||0)+(st.ngN||0)))body+=`<p style="margin:0 0 8px;color:#64707d">試験形式の通算: 正解 ${st.okN||0} 回 / 不正解 ${st.ngN||0} 回</p>`;
+ if(hist.length)body+=`<table class="rv"><tr><th>日時</th><th>結果</th><th>選んだ回答</th></tr>${hist.map(h=>`<tr><td>${fdate(h.t)}</td><td>${h.ok?'<b class="mark-ok">○ 正解</b>':'<b class="mark-ng">× 不正解</b>'}</td><td>${esc(h.sel||'').slice(0,160)}</td></tr>`).join('')}</table><p class="note" style="margin:6px 0 0">解答履歴は直近 50 回分まで保存されます。</p>`;
+ const d=document.createElement('div');d.id='recbox';d.className='modal';
+ d.onclick=ev=>{if(ev.target===d)d.remove();};
+ d.innerHTML=`<div class="box" style="max-width:640px"><div class="mh"><b>No.${q.no} の記録</b><button class="btn sm" onclick="document.getElementById('recbox').remove()">閉じる (Esc)</button></div><div class="mb">${body}</div></div>`;
+ document.body.appendChild(d);
+}
+
 function bookStats(){let ok=0,ng=0;const b=getBook();ALLARR.forEach(q=>{const e=b[q.key];if(e){if(e.r==='ok')ok++;else ng++;}});return{ok,ng,nw:ALLARR.length-ok-ng,n:ALLARR.length};}
 
 /* ---- 記録のバックアップ(書き出し/読み込み) ---- */
@@ -2427,7 +2472,7 @@ function sanitizeRec(k,str){
  else if(k==='sc300_bookui_v1'){
   if(Array.isArray(v))return undefined;
   const F=['all','unok','new','ng','ok','split','mark','memo'],C=['all','1','2','3','last'];
-  out={view:v.view==='list'?'list':'one',f:F.includes(v.f)?v.f:'all',ngc:C.includes(v.ngc)?v.ngc:'all',pos:_num(v.pos,1e4),q:_str(v.q,200),lang:v.lang==='en'?'en':'ja'};
+  out={view:v.view==='list'?'list':'one',f:F.includes(v.f)?v.f:'all',ngc:C.includes(v.ngc)?v.ngc:'all',per:['all','w1','m1','range'].includes(v.per)?v.per:'all',from:/^\d{4}-\d{2}-\d{2}$/.test(v.from||'')?v.from:'',to:/^\d{4}-\d{2}-\d{2}$/.test(v.to||'')?v.to:'',nowng:!!v.nowng,pos:_num(v.pos,1e4),q:_str(v.q,200),lang:v.lang==='en'?'en':'ja'};
   if(v.ans&&typeof v.ans==='object'&&!Array.isArray(v.ans)){const a={};Object.keys(v.ans).slice(0,2000).forEach(i=>{if(!/^\d+$/.test(i))return;const x=v.ans[i];const ok=y=>y===null||['number','boolean'].includes(typeof y);if(ok(x)||(Array.isArray(x)&&x.length<30&&x.every(ok)))a[i]=x;});out.ans=a;}
  }
  else return undefined;
@@ -2499,13 +2544,13 @@ function renderBook(app){
  else if(S.bk.view==='one'){
   S.bk.pos=Math.min(Math.max(S.bk.pos,0),n-1);const p=S.bk.pos,qi=sub[p],q=Q[qi],g=!!S.bg[qi];
   const pal=sub.map((x,i)=>`<button class="${i===p?'cur':''} ${bookStat(Q[x])==='ok'?'ans':''} ${bookStat(Q[x])==='ng'?'wrong':''} ${isMarked(Q[x])?'mk':''} ${revOn()&&isRev(Q[x])?'rvd':''}" onclick="bookJump(${i})">${i+1}</button>`).join('');
-  body=`<div class="bgrid"><div class="main"><div class="qhead"><span><b>問題 ${p+1} / ${n}</b></span><i>${setTag(q)}${q.series?' ・ シリーズ':''}</i></div><div class="qbody">${bookQ(qi)}</div>
+  body=`<div class="bgrid"><div class="main"><div class="qhead"><span><b>問題 ${p+1} / ${n}</b></span><i>${noBtn(q)}${q.series?' ・ シリーズ':''}</i></div><div class="qbody">${bookQ(qi)}</div>
   <div class="foot"><button class="btn" id="kPrev" ${p<=0?'disabled':''} onclick="bookGo(-1)">‹ 前へ</button>${g?`<button class="btn" id="kAct" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" id="kAct" onclick="gradeBook(${qi})">解答</button>`}<label class="mkl"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label>${revOn()?`<label class="mkl" title="解答して解説を表示すると自動でチェックされます。外すと未復習に戻ります"><input type="checkbox" ${isRev(q)?'checked':''} onchange="toggleRev(${qi})"> 復習済み</label>`:''}<span class="sp"></span><button class="btn pri" id="kNext" ${p>=n-1?'disabled':''} onclick="bookGo(1)">次へ ›</button></div>${extraBook(qi,g)}</div>
   <div class="side ${S.pal?'':'closed'}">${palHandles()}${palHead('問題一覧('+n+')')}<div class="palbody"><div class="pal">${pal}</div><p class="note" style="margin:10px 0 0;font-size:12px"><span style="color:var(--ok)">■</span> 正解 <span style="color:var(--ng)">■</span> 不正解 □ 未回答 <span style="color:#d83b01">⚑</span> 見直し${revOn()?' <span style="color:#2e7d32">✓</span> 復習済み(薄く表示)':''}</p></div></div></div>`;
  }else{
   const per=20,upto=Math.min(n,S.bk.page*per);
   body=`<div class="note" style="margin:4px 0 10px">該当 ${n} 問(${upto} 問まで表示)</div>`+sub.slice(0,upto).map((qi,i)=>{const q=Q[qi],g=!!S.bg[qi];
-   return `<div class="bcard"><div class="bch"><b>#${i+1}</b> <span class="tag">${setTag(q)}</span>${q.series?'<span class="tag badge-ser">シリーズ</span>':''} ${splitBadge(q)} ${revOn()?`<label class="mkl" style="float:right"><input type="checkbox" ${isRev(q)?'checked':''} onchange="toggleRev(${qi})"> 復習済み</label>`:''}<label class="mkl" style="float:right"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label></div><div class="bcb">${bookQ(qi)}</div><div class="bcf">${g?`<button class="btn" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" onclick="gradeBook(${qi})">解答</button>`}</div>${extraBook(qi,g)}</div>`;}).join('')+(upto<n?`<div style="text-align:center;margin:14px"><button class="btn" onclick="S.bk.page++;render()">さらに ${Math.min(per,n-upto)} 問を表示(残り ${n-upto} 問)</button></div>`:'');
+   return `<div class="bcard"><div class="bch"><b>#${i+1}</b> <span class="tag">${noBtn(q)}</span>${q.series?'<span class="tag badge-ser">シリーズ</span>':''} ${splitBadge(q)} ${revOn()?`<label class="mkl" style="float:right"><input type="checkbox" ${isRev(q)?'checked':''} onchange="toggleRev(${qi})"> 復習済み</label>`:''}<label class="mkl" style="float:right"><input type="checkbox" ${isMarked(q)?'checked':''} onchange="toggleMark(${qi})"> 見直し</label></div><div class="bcb">${bookQ(qi)}</div><div class="bcf">${g?`<button class="btn" onclick="retryBook(${qi})">もう一度解く</button>`:`<button class="btn pri" onclick="gradeBook(${qi})">解答</button>`}</div>${extraBook(qi,g)}</div>`;}).join('')+(upto<n?`<div style="text-align:center;margin:14px"><button class="btn" onclick="S.bk.page++;render()">さらに ${Math.min(per,n-upto)} 問を表示(残り ${n-upto} 問)</button></div>`:'');
  }
  app.innerHTML=homeShell('book',`<div class="stack"><i class="s-ok" style="width:${pct(sm.ok)}%"></i><i class="s-ng" style="width:${pct(sm.ng)}%"></i><i class="s-new" style="width:${pct(sm.nw)}%"></i></div>
  <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>正解 <b>${sm.ok}</b></span><span><i class="dot" style="background:var(--ng)"></i>不正解 <b>${sm.ng}</b></span><span><i class="dot" style="background:#c3cad2"></i>未回答 <b>${sm.nw}</b></span><span style="color:var(--sub)">全 ${sm.n} 問</span></div>${(S.bk.f==='ng'||S.bk.f==='ok')?ngChips():''}${domChip()}${tool}${n&&revOn()?revBar(sub):''}${body}`);
